@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Util">
+      <UniqueIdentifier>{88923ffe-75db-4967-9505-a0a35340a71f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{1965de82-9b6b-43ff-b527-a14f48866867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{8faa1c3e-34b2-4064-ac97-6b36796f76db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Shader">
+      <UniqueIdentifier>{c1a2ec74-7e92-4dec-a762-336810210ae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object">
+      <UniqueIdentifier>{f8db57b7-aa00-4d9b-b8e4-20decf78e267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh">
+      <UniqueIdentifier>{015e0acb-6eab-42bf-82ce-5ee90788c2e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Material">
+      <UniqueIdentifier>{818bcf0e-79f8-4003-a465-9b58c1eacce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{d0c81774-9de0-4d6d-9c3e-1aee4d8f5cdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{923f3a13-4c7a-4745-9151-a9e9d3870b9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource\Object\2D">
+      <UniqueIdentifier>{4984f067-c981-4be6-a5dc-c8a4cb55a5f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\3D">
+      <UniqueIdentifier>{dd12395f-fe28-4e70-be6f-bf84c06c175c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Object\Interface">
+      <UniqueIdentifier>{5be29ba0-14d1-4260-b5a9-3613712943f7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\include\Define.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\include\Singleton.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMgr.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Resource\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Resource\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EnginePch.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\include\Util.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Resource\Object\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Resource\Object\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Resource\Object\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetraherdon.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Teapot.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2.h">
+      <Filter>Resource\Object\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="D3.h">
+      <Filter>Resource\Object\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Resource\Object\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Torus.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Tube.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>Resource\Object\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>Resource\Object\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure.h">
+      <Filter>Resource\Object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="EnginePch.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneMgr.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Resource\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Resource\Object\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Rect.cpp">
+      <Filter>Resource\Object\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Resource\Object\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetraherdon.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\include\Util.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Teapot.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2.cpp">
+      <Filter>Resource\Object\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="D3.cpp">
+      <Filter>Resource\Object\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Resource\Object\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Cone.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Torus.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Tube.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>Resource\Object\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>Resource\Object\2D</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Dependencies\shader\Vertex.glsl">
+      <Filter>Resource\Shader</Filter>
+    </None>
+    <None Include="..\Dependencies\shader\Color.glsl">
+      <Filter>Resource\Shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
