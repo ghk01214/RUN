@@ -34,7 +34,6 @@ public:
 	void BindIndex() { _mesh->BindIndex(); }
 
 	void ApplyColor() { _material->ApplyColor(); }
-	void ApplyLight() { _material->ApplyLight(); }
 
 	size_t GetIndexNum() { return _mesh->GetIndexNum(); }
 	glm::vec3 GetPos() { return _pos = _model[3]; }

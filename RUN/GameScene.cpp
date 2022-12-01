@@ -9,7 +9,7 @@ extern Engine engine;
 
 GameScene::GameScene() :
 #pragma region [BASE VARIABLE]
-	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 1.f, 2.f }, vec3::up(), 0.f, -90.f) },
+	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 1.f, 2.f }) },
 	_color_shader{ std::make_shared<Shader>() },
 	_stop_animation{ true },
 	_animation_speed{ 100 },

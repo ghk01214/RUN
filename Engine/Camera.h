@@ -9,7 +9,7 @@ class Camera
 {
 public:
 	Camera() = default;
-	Camera(glm::vec3 pos, glm::vec3 up = vec3::up(), float pitch = 0.f, float yaw = -90.f);
+	Camera(glm::vec3 pos, float yaw = -90.f, float pitch = 0.f, glm::vec3 up = vec3::up());
 	~Camera();
 
 	void OnKeyboardMessage(uchar key, int32_t x, int32_t y);

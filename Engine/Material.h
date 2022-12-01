@@ -24,7 +24,6 @@ public:
 	virtual ~Material();
 
 	void ApplyColor();
-	void ApplyLight();
 
 	glm::vec3 GetColor() { return _color; }
 

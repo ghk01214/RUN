@@ -2,7 +2,7 @@
 #include "Shader.h"
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 pos, glm::vec3 up, float pitch, float yaw) :
+Camera::Camera(glm::vec3 pos, float yaw, float pitch, glm::vec3 up) :
 	_pos{ pos },
 	_front{ vec3::front() },
 	_up{ vec3::zero() },

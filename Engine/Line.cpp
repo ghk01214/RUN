@@ -14,20 +14,12 @@ Line::Line(glm::vec3 pos, glm::vec3 length)
 		pos.x - length.x, pos.y - length.y, pos.z - length.z
 	};
 
-	std::vector<float> color
-	{
-		BLACK, 1.f,
-		BLACK, 1.f,
-		BLACK, 1.f,
-	};
-
 	std::vector<uint32_t> index
 	{
 		0, 1
 	};
 
 	_mesh->SetVertex(&vertex);
-	_mesh->SetColor(&color);
 	_mesh->SetIndex(&index);
 }
 
