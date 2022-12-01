@@ -12,6 +12,8 @@ int32_t main(int32_t argc, char** argv)
 	// 게임을 표시할 윈도우 크기 결정
 	const Window window{ 800, 800, true };
 
+	// 아아 테스트
+
 	// 게임 엔진 초기화
 	engine.Init(&window);
 
@@ -22,3 +24,5 @@ int32_t main(int32_t argc, char** argv)
 
 	engine.Update();
 }
+
+// 풀은 어떻게 하는걸까
