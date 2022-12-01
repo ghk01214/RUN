@@ -11,7 +11,6 @@ GameScene::GameScene() :
 #pragma region [BASE VARIABLE]
 	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 1.f, 2.f }, vec3::up(), 0.f, -90.f) },
 	_color_shader{ std::make_shared<Shader>() },
-	_light_shader{ std::make_shared<Shader>() },
 	_stop_animation{ true },
 	_animation_speed{ 100 },
 	_click{ false },
@@ -26,10 +25,8 @@ GameScene::GameScene() :
 {
 #if _DEBUG
 	_color_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Color.glsl");
-	_light_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Light.glsl");
 #else
 	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Color.glsl");
-	_light_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Light.glsl");
 #endif
 
 }
@@ -129,4 +126,12 @@ void GameScene::CalculateDeltaTime()
 	_delta_time = Convert::ToFloat((_time - _old_time)) / 1000.f;
 	_old_time = _time;
 }
+
+void GameScene::box_draw()
+{
+	_box.push_back(new Cube{});
+	_box[0]->SetColor(RAND_COLOR);
+}
+
+
 #pragma endregion
