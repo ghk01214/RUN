@@ -9,6 +9,8 @@ int32_t main(int32_t argc, char** argv)
 	// glut 초기화
 	glutInit(&argc, argv);
 
+	// test 용
+
 	// 게임을 표시할 윈도우 크기 결정
 	const Window window{ 800, 800, true };
 
