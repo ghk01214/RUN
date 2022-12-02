@@ -49,12 +49,9 @@ private:
 private:
 	void CreateObjects();
 	void CreateGrid();
-	void RotateX_Cube(define::ROTATE_DIRECTION direction);
-	void RotateY_Cube(define::ROTATE_DIRECTION direction);
-	void Rotate_y_Cube(define::ROTATE_DIRECTION direction);
-	void RotateX_Cone(define::ROTATE_DIRECTION direction);
-	void RotateY_Cone(define::ROTATE_DIRECTION direction);
-	void Rotate_y_Cone(define::ROTATE_DIRECTION direction);
+	void RotateX(int32_t index, define::ROTATE_DIRECTION direction);
+	void OrbitY(define::ROTATE_DIRECTION direction);
+	void RotateY(int32_t index, define::ROTATE_DIRECTION direction);
 	void ChangeRenderObject(int index, OBJECT obj_type);
 #pragma endregion
 

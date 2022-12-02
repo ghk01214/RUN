@@ -64,54 +64,52 @@ void SampleScene_1::OnKeyboardMessage(uchar key, int32_t x, int32_t y)
 	{
 		case 'X':
 		{
-			RotateX_Cube(define::ROTATE_DIRECTION::CLOCK);
+			RotateX(0, define::ROTATE_DIRECTION::CLOCK);
 		}
 		break;
 		case 'x':
 		{
-			RotateX_Cube(define::ROTATE_DIRECTION::COUNTER_CLOCK);
+			RotateX(0, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
 		case 'Y':
 		{
-			Rotate_y_Cube(define::ROTATE_DIRECTION::CLOCK);
+			RotateY(0, define::ROTATE_DIRECTION::CLOCK);
 		}
 		break;
 		case 'y':
 		{
-			Rotate_y_Cube(define::ROTATE_DIRECTION::COUNTER_CLOCK);
+			RotateY(0, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
 		case 'A': 
 		{
-			RotateX_Cone(define::ROTATE_DIRECTION::CLOCK);
+			RotateX(1, define::ROTATE_DIRECTION::CLOCK);
 		}
 		break;
 		case 'a':
 		{
-			RotateX_Cone(define::ROTATE_DIRECTION::COUNTER_CLOCK);
+			RotateX(1, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
 		case 'B':
 		{
-			Rotate_y_Cone(define::ROTATE_DIRECTION::CLOCK);
+			RotateY(1, define::ROTATE_DIRECTION::CLOCK);
 		}
 		break;
 		case 'b':
 		{
-			Rotate_y_Cone(define::ROTATE_DIRECTION::COUNTER_CLOCK);
+			RotateY(1, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
 		case 'R': 
 		{
-			RotateY_Cube(define::ROTATE_DIRECTION::CLOCK);
-			RotateY_Cone(define::ROTATE_DIRECTION::CLOCK);
+			OrbitY(define::ROTATE_DIRECTION::CLOCK);
 		}
 		break;
 		case 'r':
 		{
-			RotateY_Cube(define::ROTATE_DIRECTION::COUNTER_CLOCK);
-			RotateY_Cone(define::ROTATE_DIRECTION::COUNTER_CLOCK);
+			OrbitY(define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
 		case 'C':
@@ -343,65 +341,47 @@ void SampleScene_1::CreateGrid()
 	_grid[2]->SetColor(RAND_COLOR);
 }
 
-void SampleScene_1::RotateX_Cube(define::ROTATE_DIRECTION direction)
+void SampleScene_1::RotateX(int32_t index, define::ROTATE_DIRECTION direction)
 {
+	auto pos{ _render_object[index]->GetPos() };
+
+	_render_object[index]->Move(-pos);
+
 	if (direction == define::ROTATE_DIRECTION::CLOCK)
-		_render_object[0]->RotateX(direction);
+		_render_object[index]->RotateX(direction);
 	else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
-		_render_object[0]->RotateX(direction);
+		_render_object[index]->RotateX(direction);
+
+	_render_object[index]->Move(pos);
 }
 
-void SampleScene_1::RotateY_Cube(define::ROTATE_DIRECTION direction)
+void SampleScene_1::OrbitY(define::ROTATE_DIRECTION direction)
 {
+	for (auto& obj : _render_object)
+	{
+		// y축에 대하여 양(시계)의 방향으로 회전
+		if (direction == define::ROTATE_DIRECTION::CLOCK)
+			obj->RotateY(direction);
+		// y축에 대하여 음(반시계)의 방향으로 회전
+		else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
+			obj->RotateY(direction);
+	}
+}
+
+void SampleScene_1::RotateY(int32_t index, define::ROTATE_DIRECTION direction)
+{
+	auto pos{ _render_object[index]->GetPos() };
+
+	_render_object[index]->Move(-pos);
+
 	// y축에 대하여 양(시계)의 방향으로 회전
 	if (direction == define::ROTATE_DIRECTION::CLOCK)
-		_render_object[0]->RotateY(direction);
+		_render_object[index]->RotateY(direction);
 	// y축에 대하여 음(반시계)의 방향으로 회전
 	else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
-		_render_object[0]->RotateY(direction);
-}
+		_render_object[index]->RotateY(direction);
 
-void SampleScene_1::Rotate_y_Cube(define::ROTATE_DIRECTION direction)
-{
-	_render_object[0]->Move(glm::vec3(1.5f, 0.0f, 0.0f));
-	// y축에 대하여 양(시계)의 방향으로 회전
-	if (direction == define::ROTATE_DIRECTION::CLOCK)
-		_render_object[0]->RotateY(direction);
-	// y축에 대하여 음(반시계)의 방향으로 회전
-	else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
-		_render_object[0]->RotateY(direction);
-	_render_object[0]->Move(glm::vec3(-1.5f, 0.0f, 0.0f));
-
-}
-
-void SampleScene_1::RotateX_Cone(define::ROTATE_DIRECTION direction)
-{
-	if (direction == define::ROTATE_DIRECTION::CLOCK)
-		_render_object[1]->RotateX(direction);
-	else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
-		_render_object[1]->RotateX(direction);
-}
-
-void SampleScene_1::RotateY_Cone(define::ROTATE_DIRECTION direction)
-{
-	// y축에 대하여 양(시계)의 방향으로 회전
-	if (direction == define::ROTATE_DIRECTION::CLOCK)
-		_render_object[1]->RotateY(direction);
-	// y축에 대하여 음(반시계)의 방향으로 회전
-	else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
-		_render_object[1]->RotateY(direction);
-}
-
-void SampleScene_1::Rotate_y_Cone(define::ROTATE_DIRECTION direction)
-{
-	_render_object[1]->Move(glm::vec3(-1.5f, 0.0f, 0.0f));
-	// y축에 대하여 양(시계)의 방향으로 회전
-	if (direction == define::ROTATE_DIRECTION::CLOCK)
-		_render_object[1]->RotateY(direction);
-	// y축에 대하여 음(반시계)의 방향으로 회전
-	else if (direction == define::ROTATE_DIRECTION::COUNTER_CLOCK)
-		_render_object[1]->RotateY(direction);
-	_render_object[1]->Move(glm::vec3(1.5f, 0.0f, 0.0f));
+	_render_object[index]->Move(pos);
 }
 
 void SampleScene_1::ChangeRenderObject(int index, OBJECT obj_type)
@@ -409,7 +389,6 @@ void SampleScene_1::ChangeRenderObject(int index, OBJECT obj_type)
 	// 화면에 그릴 객체를 obj_type으로 변경
 	_render_object[index] = _object[obj_type];
 	_render_object[index] = _object[obj_type];
-	
 }
 
 #pragma endregion

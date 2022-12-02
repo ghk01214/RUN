@@ -28,5 +28,3 @@ int32_t main(int32_t argc, char** argv)
 
 	engine.Update();
 }
-
-// 풀은 어떻게 하는걸까
