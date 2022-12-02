@@ -127,11 +127,3 @@ void GameScene::CalculateDeltaTime()
 	_old_time = _time;
 }
 
-void GameScene::box_draw()
-{
-	_box.push_back(new Cube{});
-	_box[0]->SetColor(RAND_COLOR);
-}
-
-
-#pragma endregion

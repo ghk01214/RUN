@@ -31,7 +31,6 @@ private:
 // 유저가 정의한 클래스 메소드
 #pragma region [USER-DEFINED METHOD]
 private:
-	void box_draw();
 #pragma endregion
 
 // 기본 정의된 클래스 멤버 변수(변경 X)
@@ -54,6 +53,5 @@ private:
 // 유저가 정의한 클래스 멤버 변수
 #pragma region [USER-DEFINED VARIABLE]
 private:
-	std::vector<Object*> _box;
 #pragma endregion
 };
