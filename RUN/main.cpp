@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "GameScene.h"
 #include "SampleScene.h"
+#include "SampleScene_1.h"
 #include <Engine.h>
 
 Engine engine;
@@ -20,7 +21,8 @@ int32_t main(int32_t argc, char** argv)
 
 	// 새로운 게임 scene 추가 및 추가된 scene으로 변경
 	//std::shared_ptr<GameScene> scene{ std::make_shared<GameScene>() };
-	std::shared_ptr<SampleScene> scene{ std::make_shared<SampleScene>() };
+	//std::shared_ptr<SampleScene> scene{ std::make_shared<SampleScene>() };
+	std::shared_ptr<SampleScene_1> scene{ std::make_shared<SampleScene_1>() };
 	engine.GetSceneMgr()->AddScene(define::SCENE_TYPE::GAME, &*scene);
 	engine.GetSceneMgr()->ChangeScene(define::SCENE_TYPE::GAME);
 

@@ -30,6 +30,9 @@
     <ClCompile Include="SampleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="SampleScene_1.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -39,6 +42,9 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="SampleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleScene_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
