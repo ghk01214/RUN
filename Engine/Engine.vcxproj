@@ -131,7 +131,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>if not exist $(SolutionDir)*.dll xcopy /y $(SolutionDir)Dependencies\bin\*.dll $(SolutionDir)Output\$(Configuration)\
+      <Command>if not exist $(SolutionDir)Output\$(Configuration)\*.dll xcopy /y $(SolutionDir)Dependencies\bin\*.dll $(SolutionDir)Output\$(Configuration)\
 </Command>
     </PreBuildEvent>
     <PostBuildEvent>
@@ -161,7 +161,7 @@ move $(TargetDir)Engine.lib $(SolutionDir)Dependencies\lib\$(Configuration)\</Co
     </Link>
     <PreBuildEvent>
       <Command>if not exist $(SolutionDir)Output\Data\Shader mkdir $(SolutionDir)Output\Data\Shader
-if not exist $(SolutionDir)*.dll xcopy /y $(SolutionDir)Dependencies\bin\*.dll $(SolutionDir)Output\
+if not exist $(SolutionDir)Output\*.dll xcopy /y $(SolutionDir)Dependencies\bin\*.dll $(SolutionDir)Output\
 xcopy /y /e $(SolutionDir)Dependencies\shader $(SolutionDir)Output\Data\Shader</Command>
     </PreBuildEvent>
     <PostBuildEvent>
