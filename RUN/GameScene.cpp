@@ -127,15 +127,6 @@ void GameScene::CalculateDeltaTime()
 	_old_time = _time;
 }
 
-// Delta time 계산 함수
-void GameScene::CalculateDeltaTime()
-{
-	_time = glutGet(GLUT_ELAPSED_TIME);
-
-	_delta_time = Convert::ToFloat((_time - _old_time)) / 1000.f;
-	_old_time = _time;
-}
-
 // 단일 객체를 load하는 함수
 void GameScene::LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader)
 {
