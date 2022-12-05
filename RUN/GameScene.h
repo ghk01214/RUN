@@ -27,6 +27,13 @@ public:
 	void OnRender() override;
 private:
 	void CalculateDeltaTime();
+	void LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader);
+	void ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader);
+	void LoadMultipleObject(std::vector<Object*>* object, std::shared_ptr<Shader>& shader);
+	void ReleaseMultipleObject(std::vector<Object*>* object);
+	void ViewProjection(std::shared_ptr<Shader>& shader);
+	void RenderSingleObject(Object* object, std::shared_ptr<Shader>& shader);
+	void RenderMultipleObject(std::vector<Object*>* object, std::shared_ptr<Shader>& shader);
 #pragma endregion
 // 유저가 정의한 클래스 메소드
 #pragma region [USER-DEFINED METHOD]

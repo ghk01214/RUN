@@ -127,3 +127,97 @@ void GameScene::CalculateDeltaTime()
 	_old_time = _time;
 }
 
+// Delta time 계산 함수
+void GameScene::CalculateDeltaTime()
+{
+	_time = glutGet(GLUT_ELAPSED_TIME);
+
+	_delta_time = Convert::ToFloat((_time - _old_time)) / 1000.f;
+	_old_time = _time;
+}
+
+// 단일 객체를 load하는 함수
+void GameScene::LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+{
+	object->OnLoad(shader);
+}
+
+// 동적할당된 단일 객체를 할당 해제하는 함수
+void GameScene::ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+{
+	delete object;
+	object = nullptr;
+}
+
+// 복수의 object들이 사용돼서 하나의 객체를 이루는 객체를 load하는 함수
+void GameScene::LoadMultipleObject(std::vector<Object*>* object, std::shared_ptr<Shader>& shader)
+{
+	for (auto& obj : *object)
+	{
+		obj->OnLoad(shader);
+	}
+}
+
+// 복수의 object들이 동적할당 되어 하나의 객체를 이루는 객체를 할당 해제하는 함수
+void GameScene::ReleaseMultipleObject(std::vector<Object*>* object)
+{
+	// 객체들은 Object class를 동적할당 해서 생성했으므로 할당 해제
+	for (auto& obj : *object)
+	{
+		delete obj;
+		obj = nullptr;
+	}
+}
+
+// 뷰 및 투영 변환을 하는 method
+void GameScene::ViewProjection(std::shared_ptr<Shader>& shader)
+{
+	auto view{ _camera->GetViewMatrix() };
+	auto projection{ _camera->GetProjectionMatrix() };
+
+	shader->SetMat4("view", &view);
+	shader->SetMat4("projection", &projection);
+}
+
+// 단일 객체를 rendering하는 method
+void GameScene::RenderSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+{
+	// shader program 사용
+	shader->OnUse();
+	// 뷰 변환 및 투영 변환 적용
+	ViewProjection(shader);
+
+	// VAO 바인드
+	object->BindVAO();
+
+	// 월드 변환
+	object->Transform(shader);
+
+	// 객체의 색상을 셰이더에 적용
+	object->ApplyColor();
+
+	glDrawElements(object->GetDrawType(), object->GetIndexNum(), GL_UNSIGNED_INT, 0);
+}
+
+// 복수의 object들이 사용된 객체를 rendering하는 method
+void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_ptr<Shader>& shader)
+{
+	// shader program 사용
+	shader->OnUse();
+	// 뷰 변환 및 투영 변환 적용
+	ViewProjection(shader);
+
+	for (auto& obj : *object)
+	{
+		// VAO 바인드
+		obj->BindVAO();
+
+		// 월드 변환
+		obj->Transform(shader);
+
+		// 객체의 색상을 셰이더에 적용
+		obj->ApplyColor();
+
+		glDrawElements(obj->GetDrawType(), obj->GetIndexNum(), GL_UNSIGNED_INT, 0);
+	}
+}
