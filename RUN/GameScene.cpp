@@ -148,12 +148,8 @@ void GameScene::OnAnimate(int32_t index)
 		//_sphere->Move(vec3::up(_jump_pos - pos));
 		_jumping = false;
 
-
-		printf("%f %f %f\n", _sphere->GetPos().x, _sphere->GetPos().y, _sphere->GetPos().z);
-
 		_sphere->SetPos(_sphere->GetPos().x, 0.f, _sphere->GetPos().z);
 		//_sphere->Move(vec3::up(_jump_pos - pos));
-		printf("%f\n", _sphere->GetPos().y);
 
 
 		return;
