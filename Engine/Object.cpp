@@ -74,6 +74,9 @@ void Object::Move(glm::vec3 delta)
 {
 	// 이동 행렬을 연결 리스트에 추가
 	_transform.push_back(glm::translate(mat4::unit(), delta));
+	
+	// 추가 
+	_pos += delta;
 }
 
 void Object::RotateX(float delta)

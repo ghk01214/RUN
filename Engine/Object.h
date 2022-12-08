@@ -36,12 +36,12 @@ public:
 	void ApplyColor() { _material->ApplyColor(); }
 
 	size_t GetIndexNum() { return _mesh->GetIndexNum(); }
-	glm::vec3 GetPos() { return _pos = _model[3]; }
+	glm::vec3 GetPos() { return _pos = _model[3]; }	// 편집(삭제)
 	glm::vec3 GetAngle() { return _angle; }
 	glm::vec3 GetColor() { return _material->GetColor(); }
 	uint32_t GetDrawType() { return _draw_type; }
 	
-	void SetPos(glm::vec3 pos) { _pos = pos; }
+	void SetPos(glm::vec3 pos) { _pos = pos; /*_model[3] = glm::vec4(pos, 1.f); */} // 편집(추가)
 	void SetPos(float x, float y, float z) { SetPos(glm::vec3{ x, y, z }); }
 	void SetColor(glm::vec3 color) { _material->SetColor(color); }
 	void SetColor(float r, float g, float b) { SetColor(glm::vec3(r, g, b)); }
