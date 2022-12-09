@@ -28,7 +28,7 @@ public:
 	virtual void Scale(float x, float y, float z);
 	virtual void Scale(glm::vec3 delta);
 
-	virtual void CheckCollision(Object* other);
+	bool CheckCollision(Object* other);
 
 	void BindVAO() { _mesh->BindVAO(); }
 	void BindIndex() { _mesh->BindIndex(); }

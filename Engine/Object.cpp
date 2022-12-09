@@ -111,8 +111,15 @@ void Object::Scale(glm::vec3 delta)
 	_transform.push_back(glm::scale(mat4::unit(), delta));
 }
 
-void Object::CheckCollision(Object* other)
+bool Object::CheckCollision(Object* other)
 {
 	// TODO : 충돌처리 함수 작성
 
+	if (other->GetPos()[0] + 0.5f < (Object::GetPos()[0] - 0.5f) || other->GetPos()[0] - 0.5f > (Object::GetPos()[0] + 0.5f)) return false;
+	if (other->GetPos()[1] + 0.5f < (Object::GetPos()[1] - 0.5f) || other->GetPos()[1] - 0.5f > (Object::GetPos()[1] + 0.5f)) return false;
+	if (other->GetPos()[2] + 0.5f < (Object::GetPos()[2] - 0.5f) || other->GetPos()[2] - 0.5f > (Object::GetPos()[2] + 0.5f)) return false;
+
+
+	return true;	// 위에서 검사 한것이 모두 아니면 충돌!
+	
 }

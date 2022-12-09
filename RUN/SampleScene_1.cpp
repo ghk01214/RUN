@@ -11,7 +11,7 @@ SampleScene_1::SampleScene_1() :
 #pragma region [BASE VARIABLE]
 	_camera{ std::make_shared<Camera>(glm::vec3{ 3.f, 3.f, 3.f }, -90.f - 45.f, -30.f) },
 	_color_shader{ std::make_shared<Shader>() },
-	_stop_animation{ true },
+	_stop_animation{ false },
 	_animation_speed{ 100 },
 	_click{ false },
 	_old_x{ 0 },
@@ -31,6 +31,7 @@ SampleScene_1::SampleScene_1() :
 #endif
 	CreateObjects();
 	CreateGrid();
+	OnAnimate(0);
 }
 
 SampleScene_1::~SampleScene_1()
@@ -82,12 +83,12 @@ void SampleScene_1::OnKeyboardMessage(uchar key, int32_t x, int32_t y)
 			RotateY(0, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
-		case 'A': 
+		case 'N':
 		{
 			RotateX(1, define::ROTATE_DIRECTION::CLOCK);
 		}
 		break;
-		case 'a':
+		case 'n':
 		{
 			RotateX(1, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
@@ -102,7 +103,7 @@ void SampleScene_1::OnKeyboardMessage(uchar key, int32_t x, int32_t y)
 			RotateY(1, define::ROTATE_DIRECTION::COUNTER_CLOCK);
 		}
 		break;
-		case 'R': 
+		case 'R':
 		{
 			OrbitY(define::ROTATE_DIRECTION::CLOCK);
 		}
@@ -115,7 +116,7 @@ void SampleScene_1::OnKeyboardMessage(uchar key, int32_t x, int32_t y)
 		case 'C':
 		{
 			ChangeRenderObject(0, OBJECT::CUBE_0);
-			ChangeRenderObject(1, OBJECT::CONE_1);
+			ChangeRenderObject(1, OBJECT::SPHERE_1);
 		}
 		break;
 		case 'c':
@@ -124,8 +125,34 @@ void SampleScene_1::OnKeyboardMessage(uchar key, int32_t x, int32_t y)
 			ChangeRenderObject(1, OBJECT::CUBE_1);
 		}
 		break;
+		case 'W':
+		{
+			Move(define::DIRECTION::DOWN);
+		}
+		break;
+		case 'w':
+		{
+			Move(define::DIRECTION::UP);
+		}
+		break;
+		case 'A':
+		{
+			Move(define::DIRECTION::LEFT);
+		}
+		break;
+		case 'a':
+		{
+			Move(define::DIRECTION::RIGHT);
+		}
+		break;
+		case 'S':
+		{
+			Move(define::DIRECTION::BACK);
+		}
+		break;
 		case 's':
 		{
+			Move(define::DIRECTION::FRONT);
 		}
 		break;
 	}
@@ -174,10 +201,13 @@ void SampleScene_1::OnMouseUpMessage(int32_t button, int32_t x, int32_t y)
 
 void SampleScene_1::OnAnimate(int32_t index)
 {
-	if (_stop_animation == false)
-	{
-		glutTimerFunc(_animation_speed, Engine::OnAnimate, index);
+
+	if (_render_object[1]->CheckCollision(_render_object[0])) {
+		std::cout << "collide" << std::endl;
+		_render_object[0]->SetColor(RAND_COLOR);
 	}
+
+	glutTimerFunc(_animation_speed, Engine::OnAnimate, index);
 }
 
 void SampleScene_1::OnRender()
@@ -298,15 +328,17 @@ void SampleScene_1::CreateObjects()
 	_object[CUBE_0]->SetShader(_color_shader);
 	_object[CUBE_0]->SetColor(RAND_COLOR);
 
-	_object[CONE_0] = new Cone{};
+	_object[CONE_0] = new Sphere{};
+	_object[CONE_0]->Scale(glm::vec3(-0.5f, -0.5f, -0.5f));
 	_object[CONE_0]->Move(glm::vec3(-1.5f, 0.5f, -0.5f));
 	_object[CONE_0]->SetShader(_color_shader);
 	_object[CONE_0]->SetColor(RAND_COLOR);
 
-	_object[CONE_1] = new Cone{};
-	_object[CONE_1]->Move(glm::vec3(1.5f, 0.5f, -0.5f));
-	_object[CONE_1]->SetShader(_color_shader);
-	_object[CONE_1]->SetColor(RAND_COLOR);
+	_object[SPHERE_1] = new Sphere{};
+	_object[SPHERE_1]->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
+	_object[SPHERE_1]->Move(glm::vec3(1.5f, 0.5f, -0.5f));
+	_object[SPHERE_1]->SetShader(_color_shader);
+	_object[SPHERE_1]->SetColor(RAND_COLOR);
 
 	_object[CUBE_1] = new Cube{};
 	_object[CUBE_1]->Move(glm::vec3(1.5f, 0.5f, -0.5f));
@@ -316,7 +348,8 @@ void SampleScene_1::CreateObjects()
 	_render_object.resize(2, nullptr);
 
 	_render_object[0] = _object[CUBE_0];
-	_render_object[1] = _object[CONE_1];
+	_render_object[1] = _object[SPHERE_1];
+
 }
 
 void SampleScene_1::CreateGrid()
@@ -391,4 +424,45 @@ void SampleScene_1::ChangeRenderObject(int index, OBJECT obj_type)
 	_render_object[index] = _object[obj_type];
 }
 
+void SampleScene_1::Move(define::DIRECTION direction)
+{
+	switch (direction)
+	{
+		case define::DIRECTION::LEFT:
+		{
+			// 화면에 그려지는 객체를 x축의 방향으로 -0.1만큼 이동
+			_render_object[1]->Move(vec3::left(0.1f));
+		}
+		break;
+		case define::DIRECTION::RIGHT:
+		{
+			// 화면에 그려지는 객체를 x축의 방향으로 +0.1만큼 이동
+			_render_object[1]->Move(vec3::right(0.1f));
+		}
+		break;
+		case define::DIRECTION::UP:
+		{
+			// 화면에 그려지는 객체를 y축의 방향으로 +0.1만큼 이동
+			_render_object[1]->Move(vec3::up(0.01f));
+		}
+		break;
+		case define::DIRECTION::DOWN:
+		{
+			// 화면에 그려지는 객체를 y축의 방향으로 -0.1만큼 이동
+			_render_object[1]->Move(vec3::down(0.01f));
+		}
+		break;
+		case define::DIRECTION::FRONT:
+		{
+			_render_object[1]->Move(vec3::front(0.01f));
+		}
+		break;
+		case define::DIRECTION::BACK:
+		{
+			_render_object[1]->Move(vec3::back(0.01f));
+		}
+		break;
+	}
+	std::cout << _render_object[1]->GetPos().x << std::endl;
+}
 #pragma endregion
