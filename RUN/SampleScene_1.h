@@ -13,7 +13,7 @@ class SampleScene_1 : public Scene
 		CUBE_0 = 0,
 		CONE_0,
 		CUBE_1,
-		CONE_1,
+		SPHERE_1,
 		MAX
 	};
 public:
@@ -53,6 +53,7 @@ private:
 	void OrbitY(define::ROTATE_DIRECTION direction);
 	void RotateY(int32_t index, define::ROTATE_DIRECTION direction);
 	void ChangeRenderObject(int index, OBJECT obj_type);
+	void Move(define::DIRECTION direction);
 #pragma endregion
 
 	// 기본 정의된 클래스 멤버 변수(변경 X)
