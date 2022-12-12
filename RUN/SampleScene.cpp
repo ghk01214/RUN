@@ -281,9 +281,6 @@ void SampleScene::RenderSingleObject(Object* object, std::shared_ptr<Shader>& sh
 	object->Transform(shader);
 	object->ApplyLight();
 
-	// 객체의 색상을 셰이더에 적용
-	object->ApplyColor();
-
 	glDrawElements(object->GetDrawType(), object->GetIndexNum(), GL_UNSIGNED_INT, 0);
 }
 
@@ -303,9 +300,6 @@ void SampleScene::RenderMultipleObject(std::vector<Object*>* object, std::shared
 		// 월드 변환
 		obj->Transform(shader);
 		obj->ApplyLight();
-
-		// 객체의 색상을 셰이더에 적용
-		obj->ApplyColor();
 
 		glDrawElements(obj->GetDrawType(), obj->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}

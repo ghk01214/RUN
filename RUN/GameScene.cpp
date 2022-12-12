@@ -134,7 +134,7 @@ void GameScene::LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader
 }
 
 // 동적할당된 단일 객체를 할당 해제하는 함수
-void GameScene::ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+void GameScene::ReleaseSingleObject(Object* object)
 {
 	delete object;
 	object = nullptr;
@@ -183,9 +183,7 @@ void GameScene::RenderSingleObject(Object* object, std::shared_ptr<Shader>& shad
 
 	// 월드 변환
 	object->Transform(shader);
-
-	// 객체의 색상을 셰이더에 적용
-	object->ApplyColor();
+	object->ApplyLight();
 
 	glDrawElements(object->GetDrawType(), object->GetIndexNum(), GL_UNSIGNED_INT, 0);
 }
@@ -205,9 +203,7 @@ void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_p
 
 		// 월드 변환
 		obj->Transform(shader);
-
-		// 객체의 색상을 셰이더에 적용
-		obj->ApplyColor();
+		obj->ApplyLight();
 
 		glDrawElements(obj->GetDrawType(), obj->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}
