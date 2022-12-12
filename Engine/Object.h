@@ -40,6 +40,7 @@ public:
 	glm::vec3 GetAngle() { return _angle; }
 	glm::vec3 GetColor() { return _material->GetColor(); }
 	uint32_t GetDrawType() { return _draw_type; }
+	glm::vec3 GetRadius() { return _radius; }
 	
 	void SetPos(glm::vec3 pos) { _pos = pos; }
 	void SetPos(float x, float y, float z) { SetPos(glm::vec3{ x, y, z }); }
@@ -59,4 +60,5 @@ protected:
 	std::list<glm::mat4> _transform;
 
 	uint32_t _draw_type;
+	glm::vec3 _radius;
 };

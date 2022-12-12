@@ -107,6 +107,8 @@ void Object::Scale(float x, float y, float z)
 
 void Object::Scale(glm::vec3 delta)
 {
+	_radius *= delta;
+
 	// 신축 행렬을 연결 리스트에 추가
 	_transform.push_back(glm::scale(mat4::unit(), delta));
 }
@@ -114,11 +116,17 @@ void Object::Scale(glm::vec3 delta)
 bool Object::CheckCollision(Object* other)
 {
 	// TODO : 충돌처리 함수 작성
+	if (other->GetPos().x + other->GetRadius().x < (GetPos().x - _radius.x)
+		or other->GetPos().x - other->GetRadius().x > (GetPos().x + _radius.x))
+		return false;
 
-	if (other->GetPos()[0] + 0.5f < (Object::GetPos()[0] - 0.5f) || other->GetPos()[0] - 0.5f > (Object::GetPos()[0] + 0.5f)) return false;
-	if (other->GetPos()[1] + 0.5f < (Object::GetPos()[1] - 0.5f) || other->GetPos()[1] - 0.5f > (Object::GetPos()[1] + 0.5f)) return false;
-	if (other->GetPos()[2] + 0.5f < (Object::GetPos()[2] - 0.5f) || other->GetPos()[2] - 0.5f > (Object::GetPos()[2] + 0.5f)) return false;
+	if (other->GetPos().y + other->GetRadius().y < (GetPos().y - _radius.y)
+		or other->GetPos().y - other->GetRadius().y >(GetPos().y + _radius.y))
+		return false;
 
+	if (other->GetPos().z + other->GetRadius().z < (GetPos().z - _radius.z)
+		or other->GetPos().z - other->GetRadius().z > (GetPos().z + _radius.z))
+		return false;
 
 	return true;	// 위에서 검사 한것이 모두 아니면 충돌!
 	
