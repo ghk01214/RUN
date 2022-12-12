@@ -10,7 +10,7 @@ extern Engine engine;
 SampleScene_1::SampleScene_1() :
 #pragma region [BASE VARIABLE]
 	_camera{ std::make_shared<Camera>(glm::vec3{ 3.f, 3.f, 3.f }, -90.f - 45.f, -30.f) },
-	_color_shader{ std::make_shared<Shader>() },
+	_shader{ std::make_shared<Shader>() },
 	_stop_animation{ false },
 	_animation_speed{ 100 },
 	_click{ false },
@@ -25,9 +25,9 @@ SampleScene_1::SampleScene_1() :
 #pragma endregion
 {
 #if _DEBUG
-	_color_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Color.glsl");
+	_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Light.glsl");
 #else
-	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Color.glsl");
+	_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Color.glsl");
 #endif
 	CreateObjects();
 	CreateGrid();
@@ -43,8 +43,8 @@ SampleScene_1::~SampleScene_1()
 // 정의한 모든 객체 로드
 void SampleScene_1::OnLoad()
 {
-	LoadMultipleObject(&_object, _color_shader);
-	LoadMultipleObject(&_grid, _color_shader);
+	LoadMultipleObject(&_object, _shader);
+	LoadMultipleObject(&_grid, _shader);
 }
 
 // 동적할당한 모든 객체 할당 해제
@@ -204,7 +204,7 @@ void SampleScene_1::OnAnimate(int32_t index)
 
 	if (_render_object[1]->CheckCollision(_render_object[0])) {
 		std::cout << "collide" << std::endl;
-		_render_object[0]->SetColor(RAND_COLOR);
+		_render_object[0]->SetObjectColor(RAND_COLOR, 1.f);
 	}
 
 	glutTimerFunc(_animation_speed, Engine::OnAnimate, index);
@@ -220,8 +220,8 @@ void SampleScene_1::OnRender()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// TODO : Object render
-	RenderMultipleObject(&_grid, _color_shader);
-	RenderMultipleObject(&_render_object, _color_shader);
+	RenderMultipleObject(&_grid, _shader);
+	RenderMultipleObject(&_render_object, _shader);
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
@@ -242,7 +242,7 @@ void SampleScene_1::LoadSingleObject(Object* object, std::shared_ptr<Shader>& sh
 	object->OnLoad(shader);
 }
 
-void SampleScene_1::ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+void SampleScene_1::ReleaseSingleObject(Object* object)
 {
 	delete object;
 	object = nullptr;
@@ -287,6 +287,7 @@ void SampleScene_1::RenderSingleObject(Object* object, std::shared_ptr<Shader>& 
 
 	// 월드 변환
 	object->Transform(shader);
+	object->ApplyLight();
 
 	// 객체의 색상을 셰이더에 적용
 	object->ApplyColor();
@@ -308,6 +309,7 @@ void SampleScene_1::RenderMultipleObject(std::vector<Object*>* object, std::shar
 
 		// 월드 변환
 		obj->Transform(shader);
+		obj->ApplyLight();
 
 		// 객체의 색상을 셰이더에 적용
 		obj->ApplyColor();
@@ -325,31 +327,35 @@ void SampleScene_1::CreateObjects()
 
 	_object[CUBE_0] = new Cube{};
 	_object[CUBE_0]->Move(glm::vec3(-1.5f, 0.5f, -0.5f));
-	_object[CUBE_0]->SetShader(_color_shader);
-	_object[CUBE_0]->SetColor(RAND_COLOR);
+	_object[CUBE_0]->SetShader(_shader);
+	_object[CUBE_0]->SetObjectColor(RAND_COLOR, 1.f);
 
 	_object[CONE_0] = new Sphere{};
 	_object[CONE_0]->Scale(glm::vec3(-0.5f, -0.5f, -0.5f));
 	_object[CONE_0]->Move(glm::vec3(-1.5f, 0.5f, -0.5f));
-	_object[CONE_0]->SetShader(_color_shader);
-	_object[CONE_0]->SetColor(RAND_COLOR);
+	_object[CONE_0]->SetShader(_shader);
+	_object[CONE_0]->SetObjectColor(RAND_COLOR, 1.f);
 
 	_object[SPHERE_1] = new Sphere{};
 	_object[SPHERE_1]->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	_object[SPHERE_1]->Move(glm::vec3(1.5f, 0.5f, -0.5f));
-	_object[SPHERE_1]->SetShader(_color_shader);
-	_object[SPHERE_1]->SetColor(RAND_COLOR);
+	_object[SPHERE_1]->SetShader(_shader);
+	_object[SPHERE_1]->SetObjectColor(RAND_COLOR, 1.f);
 
 	_object[CUBE_1] = new Cube{};
 	_object[CUBE_1]->Move(glm::vec3(1.5f, 0.5f, -0.5f));
-	_object[CUBE_1]->SetShader(_color_shader);
-	_object[CUBE_1]->SetColor(RAND_COLOR);
+	_object[CUBE_1]->SetShader(_shader);
+	_object[CUBE_1]->SetObjectColor(RAND_COLOR, 1.f);
 
 	_render_object.resize(2, nullptr);
 
 	_render_object[0] = _object[CUBE_0];
 	_render_object[1] = _object[SPHERE_1];
 
+	for (auto& obj : _object)
+	{
+		obj->ChangeLightState();
+	}
 }
 
 void SampleScene_1::CreateGrid()
@@ -358,20 +364,20 @@ void SampleScene_1::CreateGrid()
 
 	// x축
 	_grid[0] = new Line{};
-	_grid[0]->SetShader(_color_shader);
-	_grid[0]->SetColor(RAND_COLOR);
+	_grid[0]->SetShader(_shader);
+	_grid[0]->SetObjectColor(RED, 1.f);
 
 	// y축
 	_grid[1] = new Line{};
 	_grid[1]->RotateZ(90.f);
-	_grid[1]->SetShader(_color_shader);
-	_grid[1]->SetColor(RAND_COLOR);
+	_grid[1]->SetShader(_shader);
+	_grid[1]->SetObjectColor(GREEN, 1.f);
 
 	// z축
 	_grid[2] = new Line{};
 	_grid[2]->RotateY(90.f);
-	_grid[2]->SetShader(_color_shader);
-	_grid[2]->SetColor(RAND_COLOR);
+	_grid[2]->SetShader(_shader);
+	_grid[2]->SetObjectColor(BLUE, 1.f);
 }
 
 void SampleScene_1::RotateX(int32_t index, define::ROTATE_DIRECTION direction)

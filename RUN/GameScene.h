@@ -44,7 +44,7 @@ private:
 #pragma region [PRE-DEFINED VARIABLE]
 private:
 	std::shared_ptr<Camera> _camera;
-	std::shared_ptr<Shader> _color_shader;
+	std::shared_ptr<Shader> _shader;
 
 	bool _stop_animation;
 	int32_t _animation_speed;

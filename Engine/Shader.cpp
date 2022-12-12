@@ -179,6 +179,12 @@ void Shader::SetVec3(const std::string& name, glm::vec3* value_ptr)
 	glUniform3fv(location, 1, glm::value_ptr(*value_ptr));
 }
 
+void Shader::SetVec4(const std::string& name, glm::vec4* value_ptr)
+{
+	auto location{ glGetUniformLocation(_id, name.c_str()) };
+	glUniform4fv(location, 1, glm::value_ptr(*value_ptr));
+}
+
 void Shader::SetMat4(const std::string& name, glm::mat4* value_ptr)
 {
 	auto location{ glGetUniformLocation(_id, name.c_str()) };

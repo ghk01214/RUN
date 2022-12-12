@@ -10,7 +10,7 @@ extern Engine engine;
 GameScene::GameScene() :
 #pragma region [BASE VARIABLE]
 	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 1.f, 2.f }) },
-	_color_shader{ std::make_shared<Shader>() },
+	_shader{ std::make_shared<Shader>() },
 	_stop_animation{ true },
 	_animation_speed{ 100 },
 	_click{ false },
@@ -24,9 +24,9 @@ GameScene::GameScene() :
 #pragma endregion
 {
 #if _DEBUG
-	_color_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Color.glsl");
+	_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Light.glsl");
 #else
-	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Color.glsl");
+	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Light.glsl");
 #endif
 
 }
