@@ -189,7 +189,7 @@ void GameScene::OnMouseMotionMessage(int32_t x, int32_t y)
 	_old_x = x;
 	_old_y = y;
 
-	_camera->OnMouseMotionMessage(delta_x, delta_y);
+	//_camera->OnMouseMotionMessage(delta_x, delta_y);
 }
 
 void GameScene::OnMouseUpMessage(int32_t button, int32_t x, int32_t y)

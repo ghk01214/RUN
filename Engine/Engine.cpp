@@ -19,7 +19,7 @@ void Engine::Init(const Window* window)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH) - window->width) / 2, (glutGet(GLUT_SCREEN_HEIGHT) - window->height) / 2);
 	glutInitWindowSize(window->width, window->height);
-	glutCreateWindow("GL");
+	glutCreateWindow("RUN");
 
 	if (glewInit() != GLEW_OK)
 	{
