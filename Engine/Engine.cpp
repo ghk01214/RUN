@@ -118,7 +118,7 @@ void Engine::OnKeyboardUpMessage(uchar key, int32_t x, int32_t y)
 
 void Engine::OnSpecialKeyUpMessage(int32_t key, int32_t x, int32_t y)
 {
-	inst->_scene_mgr->OnSpecialKeyMessage(key, x, y);
+	inst->_scene_mgr->OnSpecialKeyUpMessage(key, x, y);
 	glutPostRedisplay();
 }
 

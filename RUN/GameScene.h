@@ -26,13 +26,17 @@ public:
 	void OnIdleMessage() override;
 	void OnKeyboardMessage(uchar key, int32_t x, int32_t y) override;
 	void OnSpecialKeyMessage(int32_t key, int32_t x, int32_t y) override;
+	void OnKeyboardPressedMessage();
+	void OnSpecialKeyPressedMessage();
+	void OnKeyboardUpMessage(uchar key, int32_t x, int32_t y) override;
+	void OnSpecialKeyUpMessage(int32_t key, int32_t x, int32_t y) override;
 	void OnMouseMessage(int32_t button, int32_t x, int32_t y) override;
 	void OnMouseMotionMessage(int32_t x, int32_t y) override;
 	void OnMouseUpMessage(int32_t button, int32_t x, int32_t y) override;
 	void OnAnimate(int32_t index) override;
 	void OnRender() override;
 private:
-	void CalculateDeltaTime();
+	void CalculateDeltaTimeNFPS();
 	void LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader);
 	void ReleaseSingleObject(Object* object);
 	void LoadMultipleObject(std::vector<Object*>* object, std::shared_ptr<Shader>& shader);
@@ -49,7 +53,7 @@ private:
 	void CreateGrid();
 	void ChangeRenderObject(OBJECT obj_type);
 	void Move(define::DIRECTION direction);
-	void Jump(); // Alt + Enter = 함수 / 선언 정의 만들기
+	void Jump();
 #pragma endregion
 
 	// 기본 정의된 클래스 멤버 변수(변경 X)
@@ -69,11 +73,17 @@ private:
 	int32_t _old_time;
 	float _delta_time;
 	float _wait_time;
+	int32_t _frame;
+	int32_t _frame_time;
+	float _fps;
 
 	bool _jumping = false;
 	float _jump_speed;
 	float _jump_pos;
 	float _gravity = 9.8;
+
+	std::unordered_set<uchar> _key;
+	std::unordered_set<int32_t> _special;
 #pragma endregion
 	// 유저가 정의한 클래스 멤버 변수
 #pragma region [USER-DEFINED VARIABLE]

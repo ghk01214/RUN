@@ -7,3 +7,5 @@
 #else
 #pragma comment(lib, "Engine")
 #endif
+
+#include <unordered_set>

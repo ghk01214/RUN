@@ -28,7 +28,7 @@ GameScene::GameScene() :
 #if _DEBUG
 	_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Light.glsl");
 #else
-	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Light.glsl");
+	_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Light.glsl");
 #endif
 	CreateObjects();
 	CreateGrid();
@@ -43,55 +43,63 @@ GameScene::~GameScene()
 // 정의한 모든 객체 로드
 void GameScene::OnLoad()
 {
-	LoadSingleObject(_sphere, _color_shader);
-	LoadMultipleObject(&_grid, _color_shader);
+	LoadSingleObject(_sphere, _shader);
+	LoadMultipleObject(&_grid, _shader);
 }
 
 // 동적할당한 모든 객체 할당 해제
 void GameScene::OnRelease()
 {
-	ReleaseSingleObject(_sphere, _color_shader);
+	ReleaseSingleObject(_sphere);
 	ReleaseMultipleObject(&_grid);
 }
 
 void GameScene::OnIdleMessage()
 {
-	CalculateDeltaTime();
+	CalculateDeltaTimeNFPS();
+
+	OnKeyboardPressedMessage();
+	OnSpecialKeyPressedMessage();
+
+	if (_jumping == true)
+		Jump();
 }
 
 void GameScene::OnKeyboardMessage(uchar key, int32_t x, int32_t y)
 {
-
+	_key.insert(key);
 }
 
 void GameScene::OnSpecialKeyMessage(int32_t key, int32_t x, int32_t y)
 {
-	if (_wait_time < 0.001f)
-	{
-		_wait_time += _delta_time;
-		return;
-	}
+	_special.insert(key);
 
-	// 동시입력 받고 싶으면 switch문 대신 if문 쓰기
-		if(key == GLUT_KEY_LEFT)
-		{
-			Move(define::DIRECTION::LEFT);
-		}
-		if (key == GLUT_KEY_RIGHT)
-		{
-			Move(define::DIRECTION::RIGHT);
-		}
-		if (key == GLUT_KEY_UP)
-		{
-			Move(define::DIRECTION::UP);
-		}
-		if (key == GLUT_KEY_DOWN)
-		{
-			Move(define::DIRECTION::DOWN);
-		}
 
 	//_camera->OnSpecialKeyMessage(key, x, y, _delta_time);
-	_wait_time = 0;
+}
+
+void GameScene::OnKeyboardPressedMessage()
+{
+}
+
+void GameScene::OnSpecialKeyPressedMessage()
+{
+	if (_special.contains(GLUT_KEY_LEFT))
+		Move(define::DIRECTION::LEFT);
+	if (_special.contains(GLUT_KEY_RIGHT))
+		Move(define::DIRECTION::RIGHT);
+	if (_special.contains(GLUT_KEY_UP))
+		Move(define::DIRECTION::UP);
+}
+
+void GameScene::OnKeyboardUpMessage(uchar key, int32_t x, int32_t y)
+{
+	_key.erase(key);
+}
+
+void GameScene::OnSpecialKeyUpMessage(int32_t key, int32_t x, int32_t y)
+{
+	_special.erase(key);
 }
 
 void GameScene::OnMouseMessage(int32_t button, int32_t x, int32_t y)
@@ -132,32 +140,11 @@ void GameScene::OnMouseUpMessage(int32_t button, int32_t x, int32_t y)
 void GameScene::OnAnimate(int32_t index)
 {
 	// 조건
-
-
 	if (_stop_animation == false)
 	{
+
 		glutTimerFunc(_animation_speed, Engine::OnAnimate, index);
 	}
-	else
-		return;
-	auto pos{ _sphere->GetPos().y };
-	// 	_jump_pos = _sphere->GetPos().y;
-	if (pos + _jump_speed * _delta_time * 1.5f < 0)
-	{
-		_stop_animation = true;
-		//_sphere->Move(vec3::up(_jump_pos - pos));
-		_jumping = false;
-
-		_sphere->SetPos(_sphere->GetPos().x, 0.f, _sphere->GetPos().z);
-		//_sphere->Move(vec3::up(_jump_pos - pos));
-
-
-		return;
-	}
-	
-	_sphere->Move(vec3::up(_jump_speed * _delta_time * 1.5f));
-	_jump_speed -= _gravity * _delta_time * 1.5f;
-
 }
 
 void GameScene::OnRender()
@@ -170,8 +157,8 @@ void GameScene::OnRender()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// TODO : Object render
-	RenderMultipleObject(&_grid, _color_shader);
-	RenderSingleObject(_sphere, _color_shader);
+	RenderMultipleObject(&_grid, _shader);
+	RenderSingleObject(_sphere, _shader);
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
@@ -179,11 +166,20 @@ void GameScene::OnRender()
 }
 
 // Delta time 계산 함수
-void GameScene::CalculateDeltaTime()
+void GameScene::CalculateDeltaTimeNFPS()
 {
+	++_frame;
 	_time = glutGet(GLUT_ELAPSED_TIME);
 
 	_delta_time = Convert::ToFloat((_time - _old_time)) / 1000.f;
+
+	if (_time - _frame_time > 1000)
+	{
+		_fps = _frame * 1000.f / Convert::ToFloat((_time - _frame_time));
+		_frame_time = _time;
+		_frame = 0;
+	}
+
 	_old_time = _time;
 }
 
@@ -272,10 +268,8 @@ void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_p
 void GameScene::CreateObjects()
 {
 	_sphere = new Sphere{};
-	_sphere->Scale(glm::vec3{ 0.1f });
-	_sphere->SetShader(_color_shader);
-	_sphere->SetColor(RAND_COLOR);
-	_sphere->Scale(0.1f, 0.1f, 0.1f);
+	_sphere->SetShader(_shader);
+	_sphere->SetObjectColor(RAND_COLOR, 1.f);
 }
 
 void GameScene::CreateGrid()
@@ -284,14 +278,14 @@ void GameScene::CreateGrid()
 
 	// x축
 	_grid[0] = new Line{};
-	_grid[0]->SetShader(_color_shader);
-	_grid[0]->SetColor(RAND_COLOR);
+	_grid[0]->SetShader(_shader);
+	_grid[0]->SetObjectColor(RAND_COLOR, 1.f);
 
 	// y축
 	_grid[1] = new Line{};
 	_grid[1]->RotateZ(90.f);
-	_grid[1]->SetShader(_color_shader);
-	_grid[1]->SetColor(RAND_COLOR);
+	_grid[1]->SetShader(_shader);
+	_grid[1]->SetObjectColor(RAND_COLOR, 1.f);
 }
 
 void GameScene::ChangeRenderObject(OBJECT obj_type)
@@ -301,27 +295,46 @@ void GameScene::ChangeRenderObject(OBJECT obj_type)
 
 void GameScene::Move(define::DIRECTION direction)
 {
-	if (direction == define::DIRECTION::LEFT) {
-		_sphere->Move(vec3::left(0.01f));
-	}
-	if (direction == define::DIRECTION::RIGHT)
+	switch (direction)
 	{
-		_sphere->Move(vec3::right(0.01f));
-	}
-	if (direction == define::DIRECTION::UP)
-	{
-		if (_jumping == false) {
-			_stop_animation = false;
-			_jump_speed = 4.f;
-			_jump_pos = _sphere->GetPos().y;
-			_jumping = true;
-
-			glutTimerFunc(_animation_speed, Engine::OnAnimate, 1);
-
+		case define::DIRECTION::LEFT:
+		{
+			_sphere->Move(vec3::left(0.01f));
 		}
+		break;
+		case define::DIRECTION::RIGHT:
+		{
+			_sphere->Move(vec3::right(0.01f));
+		}
+		break;
+		case define::DIRECTION::UP:
+		{
+			if (_jumping == false)
+			{
+				_jump_speed = 4.f;
+				_jump_pos = _sphere->GetPos().y;
+				_jumping = true;
+			}
+		}
+		break;
+		default:
+		break;
 	}
-	if (direction == define::DIRECTION::DOWN)
+}
+
+void GameScene::Jump()
+{
+	auto pos{ _sphere->GetPos().y };
+
+	if (pos + _jump_speed * _delta_time < 0)
 	{
-		// 사용 x
+		_jumping = false;
+
+		_sphere->Move(vec3::up(_jump_pos - pos));
+
+		return;
 	}
+
+	_sphere->Move(vec3::up(_jump_speed * _delta_time));
+	_jump_speed -= _gravity * _delta_time;
 }
