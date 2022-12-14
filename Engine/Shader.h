@@ -23,6 +23,7 @@ public:
 	void SetFloat(const std::string& name, float value);
 	void SetVec2(const std::string& name, glm::vec3* value_ptr);
 	void SetVec3(const std::string& name, glm::vec3* value_ptr);
+	void SetVec4(const std::string& name, glm::vec4* value_ptr);
 	void SetMat4(const std::string& name, glm::mat4* value_ptr);
 
 	constexpr uint32_t ID() const { return _id; }

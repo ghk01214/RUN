@@ -28,7 +28,7 @@ SampleScene::SampleScene() :
 #pragma endregion
 {
 #if _DEBUG
-	_color_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Color.glsl");
+	_color_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Light.glsl");
 #else
 	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Color.glsl");
 #endif
@@ -230,7 +230,7 @@ void SampleScene::LoadSingleObject(Object* object, std::shared_ptr<Shader>& shad
 }
 
 // 동적할당된 단일 객체를 할당 해제하는 함수
-void SampleScene::ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+void SampleScene::ReleaseSingleObject(Object* object)
 {
 	delete object;
 	object = nullptr;
@@ -279,9 +279,7 @@ void SampleScene::RenderSingleObject(Object* object, std::shared_ptr<Shader>& sh
 
 	// 월드 변환
 	object->Transform(shader);
-
-	// 객체의 색상을 셰이더에 적용
-	object->ApplyColor();
+	object->ApplyLight();
 
 	glDrawElements(object->GetDrawType(), object->GetIndexNum(), GL_UNSIGNED_INT, 0);
 }
@@ -301,9 +299,7 @@ void SampleScene::RenderMultipleObject(std::vector<Object*>* object, std::shared
 
 		// 월드 변환
 		obj->Transform(shader);
-
-		// 객체의 색상을 셰이더에 적용
-		obj->ApplyColor();
+		obj->ApplyLight();
 
 		glDrawElements(obj->GetDrawType(), obj->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}
@@ -321,14 +317,14 @@ void SampleScene::CreateObjects()
 	_object[CUBE] = new Cube{};
 	//_object[CUBE]->RotateY(-45.f);
 	//_object[CUBE]->RotateX(30.f);
-	//_object[CUBE]->SetShader(_color_shader);
-	//_object[CUBE]->SetColor(RAND_COLOR);
+	//_object[CUBE]->SetShader(_shader);
+	//_object[CUBE]->SetObjectColor(RAND_COLOR);
 
 	_object[TETRA] = new Tetraherdon{};
 	//_object[TETRA]->RotateY(-45.f);
 	//_object[TETRA]->RotateX(30.f);
-	//_object[TETRA]->SetShader(_color_shader);
-	//_object[TETRA]->SetColor(RAND_COLOR);
+	//_object[TETRA]->SetShader(_shader);
+	//_object[TETRA]->SetObjectColor(RAND_COLOR);
 
 	// 위 주석친 부분과 동일
 	// 이 for문의 의미는 _object 안에 있는 모든 원소에 대하여 루프를 돈다는 것이다
@@ -341,7 +337,8 @@ void SampleScene::CreateObjects()
 		// 해당 객체에서 사용할 shader를 결정(material/재질 정보를 위해서 필요)
 		obj->SetShader(_color_shader);
 		// 해당 객체의 색상 결정
-		obj->SetColor(RAND_COLOR);
+		obj->SetObjectColor(RAND_COLOR, 1.f);
+		obj->TurnOnLight();
 	}
 
 	// 현재 화면에 그릴 객체를 육면체로 결정
@@ -355,19 +352,19 @@ void SampleScene::CreateGrid()
 	// x축
 	_grid[0] = new Line{};
 	_grid[0]->SetShader(_color_shader);
-	_grid[0]->SetColor(RAND_COLOR);
+	_grid[0]->SetObjectColor(RED, 1.f);
 
 	// y축
 	_grid[1] = new Line{};
 	_grid[1]->RotateZ(90.f);
 	_grid[1]->SetShader(_color_shader);
-	_grid[1]->SetColor(RAND_COLOR);
+	_grid[1]->SetObjectColor(GREEN, 1.f);
 
 	// z축
 	_grid[2] = new Line{};
 	_grid[2]->RotateY(90.f);
 	_grid[2]->SetShader(_color_shader);
-	_grid[2]->SetColor(RAND_COLOR);
+	_grid[2]->SetObjectColor(BLUE, 1.f);
 }
 
 void SampleScene::ChangeRenderObject(OBJECT obj_type)

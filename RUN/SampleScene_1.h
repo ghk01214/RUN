@@ -13,7 +13,7 @@ class SampleScene_1 : public Scene
 		CUBE_0 = 0,
 		CONE_0,
 		CUBE_1,
-		CONE_1,
+		SPHERE_1,
 		MAX
 	};
 public:
@@ -36,7 +36,7 @@ public:
 private:
 	void CalculateDeltaTime();
 	void LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader);
-	void ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader);
+	void ReleaseSingleObject(Object* object);
 	void LoadMultipleObject(std::vector<Object*>* object, std::shared_ptr<Shader>& shader);
 	void ReleaseMultipleObject(std::vector<Object*>* object);
 	void ViewProjection(std::shared_ptr<Shader>& shader);
@@ -53,13 +53,14 @@ private:
 	void OrbitY(define::ROTATE_DIRECTION direction);
 	void RotateY(int32_t index, define::ROTATE_DIRECTION direction);
 	void ChangeRenderObject(int index, OBJECT obj_type);
+	void Move(define::DIRECTION direction);
 #pragma endregion
 
 	// 기본 정의된 클래스 멤버 변수(변경 X)
 #pragma region [PRE-DEFINED VARIABLE]
 private:
 	std::shared_ptr<Camera> _camera;
-	std::shared_ptr<Shader> _color_shader;
+	std::shared_ptr<Shader> _shader;
 
 	bool _stop_animation;
 	int32_t _animation_speed;

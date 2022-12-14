@@ -233,7 +233,7 @@ xcopy /y /e $(SolutionDir)Dependencies\shader $(SolutionDir)Output\Data\Shader</
     <ClCompile Include="Tube.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Dependencies\shader\Color.glsl" />
+    <None Include="..\Dependencies\shader\Light.glsl" />
     <None Include="..\Dependencies\shader\Vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

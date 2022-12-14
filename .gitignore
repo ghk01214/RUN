@@ -452,3 +452,4 @@ FodyWeavers.xsd
 Dependencies/lib/Engine.lib
 Dependencies/lib/Debug/*
 !Dependencies/model/*
+!Dependencies/model/map/*

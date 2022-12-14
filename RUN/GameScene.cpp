@@ -9,8 +9,8 @@ extern Engine engine;
 
 GameScene::GameScene() :
 #pragma region [BASE VARIABLE]
-	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 0.f, 2.f }) }, // 초기값 0 1 2
-	_color_shader{ std::make_shared<Shader>() },
+	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 1.f, 2.f }) },
+	_shader{ std::make_shared<Shader>() },
 	_stop_animation{ true },
 	_animation_speed{ 10 },
 	_click{ false },
@@ -26,9 +26,9 @@ GameScene::GameScene() :
 #pragma endregion
 {
 #if _DEBUG
-	_color_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Color.glsl");
+	_shader->OnLoad("../Dependencies/shader/Vertex.glsl", "../Dependencies/shader/Light.glsl");
 #else
-	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Color.glsl");
+	_color_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Light.glsl");
 #endif
 	CreateObjects();
 	CreateGrid();
@@ -194,7 +194,7 @@ void GameScene::LoadSingleObject(Object* object, std::shared_ptr<Shader>& shader
 }
 
 // 동적할당된 단일 객체를 할당 해제하는 함수
-void GameScene::ReleaseSingleObject(Object* object, std::shared_ptr<Shader>& shader)
+void GameScene::ReleaseSingleObject(Object* object)
 {
 	delete object;
 	object = nullptr;
@@ -243,9 +243,7 @@ void GameScene::RenderSingleObject(Object* object, std::shared_ptr<Shader>& shad
 
 	// 월드 변환
 	object->Transform(shader);
-
-	// 객체의 색상을 셰이더에 적용
-	object->ApplyColor();
+	object->ApplyLight();
 
 	glDrawElements(object->GetDrawType(), object->GetIndexNum(), GL_UNSIGNED_INT, 0);
 }
@@ -265,9 +263,7 @@ void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_p
 
 		// 월드 변환
 		obj->Transform(shader);
-
-		// 객체의 색상을 셰이더에 적용
-		obj->ApplyColor();
+		obj->ApplyLight();
 
 		glDrawElements(obj->GetDrawType(), obj->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}

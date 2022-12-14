@@ -215,7 +215,7 @@
     <None Include="..\Dependencies\shader\Vertex.glsl">
       <Filter>Resource\Shader</Filter>
     </None>
-    <None Include="..\Dependencies\shader\Color.glsl">
+    <None Include="..\Dependencies\shader\Light.glsl">
       <Filter>Resource\Shader</Filter>
     </None>
   </ItemGroup>
