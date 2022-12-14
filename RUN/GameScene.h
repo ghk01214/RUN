@@ -53,6 +53,8 @@ private:
 	void CreateObjects();
 	void Move(define::DIRECTION direction);
 	void Jump();
+
+	void MoveWorld();
 #pragma endregion
 
 	// 기본 정의된 클래스 멤버 변수(변경 X)

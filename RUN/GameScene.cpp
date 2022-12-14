@@ -40,6 +40,9 @@ GameScene::GameScene() :
 
 	CreateMap();
 	CreateObjects();
+
+	_stop_animation = false;
+	glutTimerFunc(_animation_speed, Engine::OnAnimate, 1);
 }
 
 GameScene::~GameScene()
@@ -82,8 +85,7 @@ void GameScene::OnSpecialKeyMessage(int32_t key, int32_t x, int32_t y)
 {
 	_special.insert(key);
 
-
-	//_camera->OnSpecialKeyMessage(key, x, y, _delta_time);
+	_camera->OnSpecialKeyMessage(key, x, y, _delta_time * 100.f);
 }
 
 void GameScene::OnKeyboardPressedMessage()
@@ -153,6 +155,7 @@ void GameScene::OnMouseUpMessage(int32_t button, int32_t x, int32_t y)
 
 void GameScene::OnAnimate(int32_t index)
 {
+	MoveWorld();
 	// 조건
 	if (_stop_animation == false)
 	{
@@ -281,20 +284,23 @@ void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_p
 
 void GameScene::CreateMap()
 {
-	for (int32_t i = 0; i < 30; ++i)
+	_map.reserve(29 * 2);
+
+	for (int32_t i = 0; i < 29; ++i)
 	{
 		std::string path{ "../Dependencies/model/map/" + std::to_string(i + 1) + ".obj" };
 
 		_map.push_back(new Map{ path });
 		_map.back()->SetShader(_shader);
 		_map.back()->SetObjectColor(RAND_COLOR, 1.f);
-		_map.back()->Move(vec3::front(50.f * (2 * i - 1)));
-		
-		_map_line.push_back(new Map{ path });
-		_map_line.back()->SetShader(_shader);
-		_map_line.back()->SetObjectColor(BLACK, 1.f);
-		_map_line.back()->Scale(glm::vec3{ 0.9 });
-		_map_line.back()->Move(vec3::front(50.f * (2 * i - 1)));
+		_map.back()->Move(vec3::front(50.f * (2 * i + 1)));
+
+		_map.push_back(new Map{ path });
+		_map.back()->SetShader(_shader);
+		_map.back()->SetObjectColor(BLACK, 1.f);
+		_map.back()->SetDrawType(GL_LINES);
+		_map.back()->Scale(glm::vec3{ 0.999 });
+		_map.back()->Move(vec3::front(50.f * (2 * i + 1)));
 	}
 }
 
@@ -364,4 +370,15 @@ void GameScene::Jump()
 
 	_sphere->Move(vec3::up(_jump_speed * _delta_time));
 	_jump_speed -= _gravity * _delta_time;
+}
+
+void GameScene::MoveWorld()
+{
+	for (auto& map : _map)
+	{
+		if (map->GetPos().z > 50.f)
+			map->Move(vec3::front(50.f * _map.size()));
+
+		map->Move(vec3::back(5.f));
+	}
 }
