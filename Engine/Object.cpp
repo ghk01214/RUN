@@ -10,7 +10,8 @@ Object::Object() :
 	_angle{ vec3::zero() },
 	_model{ mat4::unit() },
 	_transform{},
-	_draw_type{ GL_TRIANGLES }
+	_draw_type{ GL_TRIANGLES },
+	_radius{ vec3::unit() }
 {
 }
 

@@ -325,13 +325,11 @@ void SampleScene_1::CreateObjects()
 	_object[CUBE_0]->SetObjectColor(RAND_COLOR, 1.f);
 
 	_object[CONE_0] = new Sphere{};
-	_object[CONE_0]->Scale(glm::vec3(-0.5f, -0.5f, -0.5f));
 	_object[CONE_0]->Move(glm::vec3(-1.5f, 0.5f, -0.5f));
 	_object[CONE_0]->SetShader(_shader);
 	_object[CONE_0]->SetObjectColor(RAND_COLOR, 1.f);
 
 	_object[SPHERE_1] = new Sphere{};
-	_object[SPHERE_1]->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	_object[SPHERE_1]->Move(glm::vec3(1.5f, 0.5f, -0.5f));
 	_object[SPHERE_1]->SetShader(_shader);
 	_object[SPHERE_1]->SetObjectColor(RAND_COLOR, 1.f);
