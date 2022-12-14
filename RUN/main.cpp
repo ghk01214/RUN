@@ -1,7 +1,5 @@
 ﻿#include "pch.h"
 #include "GameScene.h"
-#include "SampleScene.h"
-#include "SampleScene_1.h"
 #include <Engine.h>
 
 Engine engine;

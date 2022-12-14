@@ -30,12 +30,6 @@
     <ClCompile Include="GameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="SampleScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SampleScene_1.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>Map</Filter>
     </ClCompile>
@@ -45,12 +39,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SampleScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SampleScene_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">

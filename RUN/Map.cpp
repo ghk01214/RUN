@@ -15,6 +15,11 @@ Map::Map(std::shared_ptr<Shader>& shader, glm::vec4 color, glm::vec3 pos) :
 	CreateTiles(&_tiles, color, shader);
 	CreateTiles(&_lines, color, shader);
 
+	for (auto& line : _lines)
+	{
+		line->TurnOffLight();
+	}
+
 	for (auto& tile : _tiles)
 	{
 		tile->Move(pos);
@@ -33,6 +38,7 @@ Map::Map(std::shared_ptr<Shader>& shader, glm::vec4 color, glm::vec3 pos) :
 
 Map::~Map()
 {
+	OnRelease();
 }
 
 void Map::OnLoad(std::shared_ptr<Shader>& shader)
@@ -50,6 +56,12 @@ void Map::OnLoad(std::shared_ptr<Shader>& shader)
 	}
 
 	for (auto& [obj, render] : _items)
+	{
+		if (obj != nullptr)
+			obj->OnLoad(shader);
+	}
+
+	for (auto& obj : _blocks)
 	{
 		if (obj != nullptr)
 			obj->OnLoad(shader);
@@ -75,6 +87,12 @@ void Map::OnRelease()
 		delete item;
 		item = nullptr;
 	}
+
+	for (auto& block : _blocks)
+	{
+		delete block;
+		block = nullptr;
+	}
 }
 
 void Map::CreateTiles(std::vector<Rect*>* rect, glm::vec4 color, std::shared_ptr<Shader>& shader)
@@ -88,6 +106,8 @@ void Map::CreateTiles(std::vector<Rect*>* rect, glm::vec4 color, std::shared_ptr
 		rect->push_back(new Rect{});
 		rect->back()->SetShader(shader);
 		rect->back()->SetObjectColor(color);
+		rect->back()->SetLightPos(-5.f, 5.f, -5.f);
+		rect->back()->TurnOnLight();
 		rect->back()->Scale(glm::vec3{ scale_size });
 		rect->back()->RotateX(90.f);
 
@@ -127,45 +147,132 @@ void Map::CreateTiles(std::vector<Rect*>* rect, glm::vec4 color, std::shared_ptr
 	}
 }
 
-void Map::Move(glm::vec3 delta)
+void Map::Move(glm::vec3 delta, glm::vec3 light_pos)
 {
 	for (auto& tile : _tiles)
 	{
-		if (tile != nullptr)
-			tile->Move(delta);
+		if (tile == nullptr)
+			continue;
+
+		tile->SetLightPos(light_pos);
+		tile->Move(delta);
 	}
 
 	for (auto& tile : _lines)
 	{
-		if (tile != nullptr)
-			tile->Move(delta);
+		if (tile == nullptr)
+			continue;
+
+		tile->SetLightPos(light_pos);
+		tile->Move(delta);
 	}
 
 	for (auto& [item, render] : _items)
 	{
-		if (item != nullptr)
-			item->Move(delta);
+		if (item == nullptr)
+			continue;
+
+		item->SetLightPos(light_pos);
+		item->Move(delta);
+	}
+
+	for (auto& block : _blocks)
+	{
+		if (block == nullptr)
+			continue;
+
+		block->SetLightPos(light_pos);
+		block->Move(delta);
 	}
 }
 
-void Map::Rotate(float delta)
+void Map::Rotate(float delta, glm::vec3 light_pos)
 {
 	for (auto& tile : _tiles)
 	{
-		if (tile != nullptr)
-			tile->RotateZ(delta);
+		if (tile == nullptr)
+			continue;
+
+		tile->Move(vec3::down(1.299f * 2.f * 5.f));
+		tile->RotateZ(delta);
+		tile->Move(vec3::up(1.299f * 2.f * 5.f));
+		tile->SetLightPos(light_pos);
 	}
 
 	for (auto& tile : _lines)
 	{
-		if (tile != nullptr)
-			tile->RotateZ(delta);
+		if (tile == nullptr)
+			continue;
+
+		tile->Move(vec3::down(1.299f * 2.f * 5.f));
+		tile->RotateZ(delta);
+		tile->Move(vec3::up(1.299f * 2.f * 5.f));
+		tile->SetLightPos(light_pos);
 	}
 
 	for (auto& [item, render] : _items)
 	{
-		if (item != nullptr)
-			item->RotateZ(delta);
+		if (item == nullptr)
+			continue;
+
+		item->Move(vec3::down(1.299f * 2.f * 5.f));
+		item->RotateZ(delta);
+		item->Move(vec3::up(1.299f * 2.f * 5.f));
+		item->SetLightPos(light_pos);
+	}
+
+	for (auto& block : _blocks)
+	{
+		if (block == nullptr)
+			continue;
+
+		block->Move(vec3::down(1.299f * 2.f * 5.f));
+		block->RotateZ(delta);
+		block->Move(vec3::up(1.299f * 2.f * 5.f));
+		block->SetLightPos(light_pos);
+	}
+}
+
+void Map::AddBlock(int32_t index, std::shared_ptr<Shader>& shader)
+{
+	_blocks[index] = new Cube{};
+	_blocks[index]->SetShader(shader);
+	_blocks[index]->SetObjectColor(0.4f, 0.294f, 0.f, 1.f);
+	_blocks[index]->SetLightPos(-5.f, 5.f, -5.f);
+	_blocks[index]->TurnOnLight();
+	_blocks[index]->Scale(5.f, 3.f, 5.f);
+	_blocks[index]->Move(vec3::up(0.5f));
+
+	auto pos{ _tiles[index]->GetPos() };
+
+	if (3 <= index and index < 6)
+	{
+		_blocks[index]->RotateZ(-60.f);
+		_blocks[index]->Move(pos.x + 0.7f, pos.y, pos.z);
+	}
+	else if (6 <= index and index < 9)
+	{
+		_blocks[index]->RotateZ(-120.f);
+		_blocks[index]->Move(pos.x + 0.7f, pos.y, pos.z);
+	}
+	else if (9 <= index and index < 12)
+	{
+		_blocks[index]->RotateZ(180.f);
+		_blocks[index]->Move(pos.x, pos.y - 0.7f, pos.z);
+	}
+	else if (12 <= index and index < 15)
+	{
+		_blocks[index]->RotateZ(120.f);
+		_blocks[index]->Move(pos.x - 0.7f, pos.y, pos.z);
+	}
+	else if (index >= 15)
+	{
+		_blocks[index]->RotateZ(60.f);
+		_blocks[index]->Move(pos.x - 0.7f, pos.y, pos.z);
+	}
+	else
+	{
+		_blocks[index]->Move(pos.x, pos.y + 0.7f, pos.z);
 	}
 }
 
@@ -186,6 +293,8 @@ void Map::ChangeTileColor(int32_t index, float r, float g, float b, std::shared_
 	_items[index].second = true;
 	_items[index].first->SetShader(shader);
 	_items[index].first->SetObjectColor(r, g, b, 1.f);
+	_items[index].first->SetLightPos(-5.f, 5.f, -5.f);
+	_items[index].first->TurnOnLight();
 
 	auto pos{ _tiles[index]->GetPos() };
 
@@ -220,9 +329,9 @@ void Map::ChangeTileColor(int32_t index, float r, float g, float b, std::shared_
 	}
 }
 
-void Map::Reuse(float delta)
+void Map::Reuse(float delta, glm::vec3 light_pos)
 {
-	Move(vec3::front(delta));
+	Move(vec3::front(delta), light_pos);
 
 	for (auto& [item, render] : _items)
 	{
@@ -233,7 +342,7 @@ void Map::Reuse(float delta)
 	}
 }
 
-void Map::Render(std::shared_ptr<Shader>& shader)
+void Map::Render(std::shared_ptr<Shader>& shader, bool fever)
 {
 	for (auto& tile : _tiles)
 	{
@@ -259,6 +368,9 @@ void Map::Render(std::shared_ptr<Shader>& shader)
 		glDrawElements(tile->GetDrawType(), tile->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}
 
+	if (fever == true)
+		return;
+
 	for (auto& [item, render] : _items)
 	{
 		if (item == nullptr)
@@ -273,6 +385,18 @@ void Map::Render(std::shared_ptr<Shader>& shader)
 
 		glDrawElements(item->GetDrawType(), item->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}
+
+	for (auto& block : _blocks)
+	{
+		if (block == nullptr)
+			continue;
+
+		block->BindVAO();
+		block->Transform(shader);
+		block->ApplyLight();
+
+		glDrawElements(block->GetDrawType(), block->GetIndexNum(), GL_UNSIGNED_INT, 0);
+	}
 }
 
 const float Map::GetPos() const
@@ -284,26 +408,68 @@ const float Map::GetPos() const
 	}
 }
 
+void Map::SetLightPos(glm::vec3 pos)
+{
+	for (auto& tile : _tiles)
+	{
+		if (tile == nullptr)
+			continue;
+
+		tile->SetLightPos(pos);
+	}
+
+	for (auto& [item, render] : _items)
+	{
+		if (item == nullptr)
+			continue;
+
+		item->SetLightPos(pos);
+	}
+
+	for (auto& block : _blocks)
+	{
+		if (block == nullptr)
+			continue;
+
+		block->SetLightPos(pos);
+	}
+}
+
 int32_t Map::CheckCollision(Object* other)
 {
 	if (other->GetPos().x + other->GetRadius().x > 7.5f)
 		return 1;
 
-	if (other->GetPos().x - other->GetRadius().x < 7.5f)
+	if (other->GetPos().x - other->GetRadius().x < -7.5f)
 		return 2;
 
-	if ((other->GetPos().y + other->GetRadius().y > 7.5f)
-		or (other->GetPos().y - other->GetRadius().y < 7.5f))
-		return 3;
+	if (other->GetPos().y - other->GetRadius().y < 0.f)
+	{
+		/*for (auto& tile : _tiles)
+		{
+			if (tile == nullptr)
+				continue;
 
-	if ((other->GetPos().z + other->GetRadius().z > 7.5f)
-		or (other->GetPos().z - other->GetRadius().z < 7.5f))
+			if (tile->CheckCollision(other) == 0)
+				return 3;
+		}*/
+
+		for (int32_t i = 0; i < _tiles.size(); ++i)
+		{
+			if (_tiles[i] == nullptr)
+				continue;
+
+			if (_tiles[i]->CheckCollision(other) == 0)
+				return 3;
+		}
+
 		return 4;
+	}
 
 	return 0;
 }
 
-void Map::CheckItemCollision(Object* player)
+int32_t Map::CheckItemCollision(Object* player)
 {
 	for (auto& [item, render] : _items)
 	{
@@ -313,7 +479,30 @@ void Map::CheckItemCollision(Object* player)
 		if (render == false)
 			continue;
 
-		if (item->CheckCollision(player) == true)
+		if (item->CheckCollision(player) == 0)
+		{
 			render = false;
+
+			if (item->GetColor() == glm::vec3{ RED })
+				return 1;
+			else if (item->GetColor() == glm::vec3{ GREEN })
+				return 2;
+			else if (item->GetColor() == glm::vec3{ BLUE })
+				return 3;
+		}
 	}
+}
+
+bool Map::CheckBlockCollision(Object* player)
+{
+	for (auto& block : _blocks)
+	{
+		if (block == nullptr)
+			continue;
+
+		if (block->CheckCollision(player) == 0)
+			return true;
+	}
+
+	return false;
 }

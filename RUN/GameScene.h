@@ -9,12 +9,6 @@ class Map;
 
 class GameScene : public Scene
 {
-private:
-	enum OBJECT
-	{
-		SPHERE = 0,
-		MAX
-	};
 public:
 	GameScene();
 	~GameScene();
@@ -51,7 +45,7 @@ private:
 #pragma region [USER-DEFINED METHOD]
 private:
 	void CreateMap();
-	void CreateObjects();
+	void CreatePlayer();
 
 	void LoadMap(std::vector<Map*>* map, std::shared_ptr<Shader>& shader);
 	void ReleaseMap(std::vector<Map*>* map);
@@ -61,7 +55,10 @@ private:
 	void Jump();
 
 	void MoveWorld();
-	void CheckWorldCollision(Object* map, Object* player);
+	void CheckWorldCollision(Map* map);
+
+	void DetectGameOver();
+	void CheckPlayerStatus();
 #pragma endregion
 
 	// 기본 정의된 클래스 멤버 변수(변경 X)
@@ -92,13 +89,22 @@ private:
 private:
 	std::vector<Map*> _map;
 	std::vector<Object*> _map_line;
-	Object* _sphere;		// == Object* _object[2](이 변수는 단일 객체가 아닌 배열로서 사용)
-	std::vector<Object*> _grid;
-	Object* _object;
+	Object* _player;		// == Object* _object[2](이 변수는 단일 객체가 아닌 배열로서 사용)
 
 	bool _jumping;
 	float _jump_speed;
 	float _jump_pos;
 	float _gravity;
+
+	bool _game_over;
+	float _end_time;
+
+	std::unordered_map<std::string, bool> _status;
+	float _fever_time;
+	bool _fever;
+	float _game_speed;
+
+	float _replace;
+	glm::vec3 _light_pos;
 #pragma endregion
 };
