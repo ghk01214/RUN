@@ -25,6 +25,6 @@ int32_t main(int32_t argc, char** argv)
 	std::shared_ptr<SampleScene_1> scene{ std::make_shared<SampleScene_1>() };
 	engine.GetSceneMgr()->AddScene(define::SCENE_TYPE::GAME, &*scene);
 	engine.GetSceneMgr()->ChangeScene(define::SCENE_TYPE::GAME);
-
+	
 	engine.Update();
 }

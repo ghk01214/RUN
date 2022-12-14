@@ -47,7 +47,7 @@ public:
 	const glm::vec3 GetRadius() const { return _radius; }
 	constexpr bool IsLightOn() const { return _material->IsLightOn(); }
 	
-	void SetPos(glm::vec3 pos) { _pos = pos; }
+	void SetPos(glm::vec3 pos) { _pos = pos; _model[3] = glm::vec4(pos, 1.f); }	// 수정(추가)
 	void SetPos(float x, float y, float z) { SetPos(glm::vec3{ x, y, z }); }
 	void SetObjectColor(glm::vec4 color) { _material->SetObjectColor(color); }
 	void SetObjectColor(float r, float g, float b, float a) { SetObjectColor(glm::vec4(r, g, b, a)); }
