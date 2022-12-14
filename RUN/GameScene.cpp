@@ -209,7 +209,7 @@ void GameScene::OnAnimate(int32_t index)
 
 void GameScene::OnRender()
 {
-	glClearColor(GRAY, 1.f);
+	glClearColor(BLACK, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_BLEND);
@@ -740,10 +740,12 @@ void GameScene::CheckPlayerStatus()
 		_fever_time = 0.f;
 		_fever = false;
 		_player->SetObjectColor(BLACK, 1.f);
+		_player->SetLightPos(_light_pos);
 		return;
 	}
 
 	_fever_time += _delta_time;
 	_fever = true;
 	_player->SetObjectColor(RAND_COLOR, 1.f);
+	_player->SetLightPos(_light_pos);
 }

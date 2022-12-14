@@ -161,8 +161,10 @@ move $(TargetDir)Engine.lib $(SolutionDir)Dependencies\lib\$(Configuration)\</Co
     </Link>
     <PreBuildEvent>
       <Command>if not exist $(SolutionDir)Output\Data\Shader mkdir $(SolutionDir)Output\Data\Shader
+if not exist $(SolutionDir)Output\Data\Model mkdir $(SolutionDir)Output\Data\Model
 if not exist $(SolutionDir)Output\*.dll xcopy /y $(SolutionDir)Dependencies\bin\*.dll $(SolutionDir)Output\
-xcopy /y /e $(SolutionDir)Dependencies\shader $(SolutionDir)Output\Data\Shader</Command>
+xcopy /y /e $(SolutionDir)Dependencies\shader $(SolutionDir)Output\Data\Shader
+xcopy /y /e $(SolutionDir)Dependencies\model $(SolutionDir)Output\Data\Model</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>move $(TargetDir)Engine.lib $(SolutionDir)Dependencies\lib\</Command>
