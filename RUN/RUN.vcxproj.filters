@@ -16,6 +16,9 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{f3c7cfe1-033c-4ad9-b90d-121700786f76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{f28861b0-47a4-45a2-8a24-291bd9e92393}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,6 +36,9 @@
     <ClCompile Include="SampleScene_1.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -46,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="SampleScene_1.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

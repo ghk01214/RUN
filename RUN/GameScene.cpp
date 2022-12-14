@@ -2,6 +2,7 @@
 #include <Shader.h>
 #include <Figure.h>
 #include <Camera.h>
+#include "Map.h"
 #include "GameScene.h"
 #include <Engine.h>
 
@@ -19,10 +20,16 @@ GameScene::GameScene() :
 	_time{ glutGet(GLUT_ELAPSED_TIME) },
 	_old_time{ _time },
 	_delta_time{ 0.f },
-	_wait_time{ 0.f },
+	_frame{ 0 },
+	_frame_time{ _time },
+	_fps{ 0.f },
 #pragma endregion
 #pragma region [USER-DEFINE METHOD]
-	_sphere{ nullptr }
+	_sphere{ nullptr },
+	_jumping{ false },
+	_jump_speed{ 4.f },
+	_jump_pos{ 0.f },
+	_gravity{ 9.8f }
 #pragma endregion
 {
 #if _DEBUG
@@ -30,8 +37,9 @@ GameScene::GameScene() :
 #else
 	_shader->OnLoad("Data/Shader/Vertex.glsl", "Data/Shader/Light.glsl");
 #endif
+
+	CreateMap();
 	CreateObjects();
-	CreateGrid();
 }
 
 GameScene::~GameScene()
@@ -44,14 +52,14 @@ GameScene::~GameScene()
 void GameScene::OnLoad()
 {
 	LoadSingleObject(_sphere, _shader);
-	LoadMultipleObject(&_grid, _shader);
+	LoadMultipleObject(&_map, _shader);
 }
 
 // 동적할당한 모든 객체 할당 해제
 void GameScene::OnRelease()
 {
 	ReleaseSingleObject(_sphere);
-	ReleaseMultipleObject(&_grid);
+	ReleaseMultipleObject(&_map);
 }
 
 void GameScene::OnIdleMessage()
@@ -89,7 +97,13 @@ void GameScene::OnSpecialKeyPressedMessage()
 	if (_special.contains(GLUT_KEY_RIGHT))
 		Move(define::DIRECTION::RIGHT);
 	if (_special.contains(GLUT_KEY_UP))
+		Move(define::DIRECTION::FRONT);
+	if (_special.contains(GLUT_KEY_DOWN))
+		Move(define::DIRECTION::BACK);
+	if (_special.contains(GLUT_KEY_PAGE_UP))
 		Move(define::DIRECTION::UP);
+	if (_special.contains(GLUT_KEY_PAGE_DOWN))
+		Move(define::DIRECTION::DOWN);
 }
 
 void GameScene::OnKeyboardUpMessage(uchar key, int32_t x, int32_t y)
@@ -157,8 +171,8 @@ void GameScene::OnRender()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// TODO : Object render
-	RenderMultipleObject(&_grid, _shader);
 	RenderSingleObject(_sphere, _shader);
+	RenderMultipleObject(&_map, _shader);
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
@@ -265,32 +279,30 @@ void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_p
 	}
 }
 
+void GameScene::CreateMap()
+{
+	for (int32_t i = 0; i < 30; ++i)
+	{
+		std::string path{ "../Dependencies/model/map/" + std::to_string(i + 1) + ".obj" };
+
+		_map.push_back(new Map{ path });
+		_map.back()->SetShader(_shader);
+		_map.back()->SetObjectColor(RAND_COLOR, 1.f);
+		_map.back()->Move(vec3::front(50.f * (2 * i - 1)));
+		
+		_map_line.push_back(new Map{ path });
+		_map_line.back()->SetShader(_shader);
+		_map_line.back()->SetObjectColor(BLACK, 1.f);
+		_map_line.back()->Scale(glm::vec3{ 0.9 });
+		_map_line.back()->Move(vec3::front(50.f * (2 * i - 1)));
+	}
+}
+
 void GameScene::CreateObjects()
 {
 	_sphere = new Sphere{};
 	_sphere->SetShader(_shader);
 	_sphere->SetObjectColor(RAND_COLOR, 1.f);
-}
-
-void GameScene::CreateGrid()
-{
-	_grid.resize(2, nullptr);
-
-	// x축
-	_grid[0] = new Line{};
-	_grid[0]->SetShader(_shader);
-	_grid[0]->SetObjectColor(RAND_COLOR, 1.f);
-
-	// y축
-	_grid[1] = new Line{};
-	_grid[1]->RotateZ(90.f);
-	_grid[1]->SetShader(_shader);
-	_grid[1]->SetObjectColor(RAND_COLOR, 1.f);
-}
-
-void GameScene::ChangeRenderObject(OBJECT obj_type)
-{
-	//_render_object = _object[obj_type];
 }
 
 void GameScene::Move(define::DIRECTION direction)
@@ -299,22 +311,37 @@ void GameScene::Move(define::DIRECTION direction)
 	{
 		case define::DIRECTION::LEFT:
 		{
-			_sphere->Move(vec3::left(0.01f));
+			_sphere->Move(vec3::left(0.1f));
 		}
 		break;
 		case define::DIRECTION::RIGHT:
 		{
-			_sphere->Move(vec3::right(0.01f));
+			_sphere->Move(vec3::right(0.1f));
 		}
 		break;
 		case define::DIRECTION::UP:
 		{
-			if (_jumping == false)
+			/*if (_jumping == false)
 			{
 				_jump_speed = 4.f;
 				_jump_pos = _sphere->GetPos().y;
 				_jumping = true;
-			}
+			}*/
+			_sphere->Move(vec3::up(0.1f));
+		}
+		break;
+		case define::DIRECTION::DOWN:
+		{
+			_sphere->Move(vec3::down(0.1f));
+		}
+		case define::DIRECTION::FRONT:
+		{
+			_sphere->Move(vec3::front(0.1f));
+		}
+		break;
+		case define::DIRECTION::BACK:
+		{
+			_sphere->Move(vec3::back(0.1f));
 		}
 		break;
 		default:

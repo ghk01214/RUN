@@ -102,6 +102,7 @@ void Engine::OnKeyboardUpMessage(uchar key, int32_t x, int32_t y)
 {
 	switch (key)
 	{
+		case 0x1B: FALLTHROUGH
 		case 'Q': FALLTHROUGH
 		case 'q':
 		{

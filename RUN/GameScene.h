@@ -49,9 +49,8 @@ private:
 	// 유저가 정의한 클래스 메소드
 #pragma region [USER-DEFINED METHOD]
 private:
+	void CreateMap();
 	void CreateObjects();
-	void CreateGrid();
-	void ChangeRenderObject(OBJECT obj_type);
 	void Move(define::DIRECTION direction);
 	void Jump();
 #pragma endregion
@@ -72,15 +71,9 @@ private:
 	int32_t _time;
 	int32_t _old_time;
 	float _delta_time;
-	float _wait_time;
 	int32_t _frame;
 	int32_t _frame_time;
 	float _fps;
-
-	bool _jumping = false;
-	float _jump_speed;
-	float _jump_pos;
-	float _gravity = 9.8;
 
 	std::unordered_set<uchar> _key;
 	std::unordered_set<int32_t> _special;
@@ -88,7 +81,14 @@ private:
 	// 유저가 정의한 클래스 멤버 변수
 #pragma region [USER-DEFINED VARIABLE]
 private:
+	std::vector<Object*> _map;
+	std::vector<Object*> _map_line;
 	Object* _sphere;		// == Object* _object[2](이 변수는 단일 객체가 아닌 배열로서 사용)
 	std::vector<Object*> _grid;
+
+	bool _jumping;
+	float _jump_speed;
+	float _jump_pos;
+	float _gravity;
 #pragma endregion
 };
