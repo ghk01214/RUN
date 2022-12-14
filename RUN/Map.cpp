@@ -10,7 +10,7 @@ Map::Map(std::shared_ptr<Shader>& shader, glm::vec4 color, glm::vec3 pos) :
 	_tiles{},
 	_lines{},
 	_blocks(18, nullptr),
-	_items(18, nullptr)
+	_items(18, std::make_pair(nullptr, false))
 {
 	CreateTiles(&_tiles, color, shader);
 	CreateTiles(&_lines, color, shader);
@@ -49,7 +49,7 @@ void Map::OnLoad(std::shared_ptr<Shader>& shader)
 			obj->OnLoad(shader);
 	}
 
-	for (auto& obj : _items)
+	for (auto& [obj, render] : _items)
 	{
 		if (obj != nullptr)
 			obj->OnLoad(shader);
@@ -70,7 +70,7 @@ void Map::OnRelease()
 		tile = nullptr;
 	}
 
-	for (auto& item : _items)
+	for (auto& [item, render] : _items)
 	{
 		delete item;
 		item = nullptr;
@@ -141,7 +141,7 @@ void Map::Move(glm::vec3 delta)
 			tile->Move(delta);
 	}
 
-	for (auto& item : _items)
+	for (auto& [item, render] : _items)
 	{
 		if (item != nullptr)
 			item->Move(delta);
@@ -162,7 +162,7 @@ void Map::Rotate(float delta)
 			tile->RotateZ(delta);
 	}
 
-	for (auto& item : _items)
+	for (auto& [item, render] : _items)
 	{
 		if (item != nullptr)
 			item->RotateZ(delta);
@@ -182,23 +182,55 @@ void Map::ChangeTileColor(int32_t index, float r, float g, float b, std::shared_
 {
 	_tiles[index]->SetObjectColor(r, g, b, 1.f);
 
-	_items[index] = new Teapot{};
-	_items[index]->SetShader(shader);
-	_items[index]->SetObjectColor(WHITE, 1.f);
+	_items[index].first = new Teapot{};
+	_items[index].second = true;
+	_items[index].first->SetShader(shader);
+	_items[index].first->SetObjectColor(r, g, b, 1.f);
+
+	auto pos{ _tiles[index]->GetPos() };
 
 	if (3 <= index and index < 6)
-		_items[index]->RotateZ(-60.f);
+	{
+		_items[index].first->RotateZ(-60.f);
+		_items[index].first->Move(pos.x + 0.7f, pos.y, pos.z);
+	}
 	else if (6 <= index and index < 9)
-		_items[index]->RotateZ(-120.f);
+	{
+		_items[index].first->RotateZ(-120.f);
+		_items[index].first->Move(pos.x + 0.7f, pos.y, pos.z);
+	}
 	else if (9 <= index and index < 12)
-		_items[index]->RotateZ(180.f);
+	{
+		_items[index].first->RotateZ(180.f);
+		_items[index].first->Move(pos.x, pos.y - 0.7f, pos.z);
+	}
 	else if (12 <= index and index < 15)
-		_items[index]->RotateZ(120.f);
+	{
+		_items[index].first->RotateZ(120.f);
+		_items[index].first->Move(pos.x - 0.7f, pos.y, pos.z);
+	}
 	else if (index >= 15)
-		_items[index]->RotateZ(60.f);
-		
-	//_items[index]->Move(vec3::up(2.f));
-	_items[index]->Move(_tiles[index]->GetPos());
+	{
+		_items[index].first->RotateZ(60.f);
+		_items[index].first->Move(pos.x - 0.7f, pos.y, pos.z);
+	}
+	else
+	{
+		_items[index].first->Move(pos.x, pos.y + 0.7f, pos.z);
+	}
+}
+
+void Map::Reuse(float delta)
+{
+	Move(vec3::front(delta));
+
+	for (auto& [item, render] : _items)
+	{
+		if (item == nullptr)
+			continue;
+
+		render = true;
+	}
 }
 
 void Map::Render(std::shared_ptr<Shader>& shader)
@@ -227,9 +259,12 @@ void Map::Render(std::shared_ptr<Shader>& shader)
 		glDrawElements(tile->GetDrawType(), tile->GetIndexNum(), GL_UNSIGNED_INT, 0);
 	}
 
-	for (auto& item : _items)
+	for (auto& [item, render] : _items)
 	{
 		if (item == nullptr)
+			continue;
+
+		if (render == false)
 			continue;
 
 		item->BindVAO();
@@ -251,19 +286,34 @@ const float Map::GetPos() const
 
 int32_t Map::CheckCollision(Object* other)
 {
-	//if (other->GetPos().x + other->GetRadius().x > GetPos().x + _radius.x)
-	//	return 1;
+	if (other->GetPos().x + other->GetRadius().x > 7.5f)
+		return 1;
 
-	//if (other->GetPos().x - other->GetRadius().x < GetPos().x - _radius.x)
-	//	return 2;
+	if (other->GetPos().x - other->GetRadius().x < 7.5f)
+		return 2;
 
-	//if ((other->GetPos().y + other->GetRadius().y > GetPos().y + _radius.y)
-	//	or (other->GetPos().y - other->GetRadius().y < GetPos().y - _radius.y))
-	//	return 3;
+	if ((other->GetPos().y + other->GetRadius().y > 7.5f)
+		or (other->GetPos().y - other->GetRadius().y < 7.5f))
+		return 3;
 
-	//if ((other->GetPos().z + other->GetRadius().z > GetPos().z + _radius.z)
-	//	or (other->GetPos().z - other->GetRadius().z < GetPos().z - _radius.z))
-	//	return 4;
+	if ((other->GetPos().z + other->GetRadius().z > 7.5f)
+		or (other->GetPos().z - other->GetRadius().z < 7.5f))
+		return 4;
 
 	return 0;
+}
+
+void Map::CheckItemCollision(Object* player)
+{
+	for (auto& [item, render] : _items)
+	{
+		if (item == nullptr)
+			continue;
+
+		if (render == false)
+			continue;
+
+		if (item->CheckCollision(player) == true)
+			render = false;
+	}
 }

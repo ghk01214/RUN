@@ -503,9 +503,10 @@ void GameScene::MoveWorld()
 	for (auto& map : _map)
 	{
 		if (map->GetPos() > 1.f)
-			map->Move(vec3::front(5.f * _map.size()));
+			map->Reuse(5.f * _map.size());
 
 		//CheckWorldCollision(map, _sphere);
+		map->CheckItemCollision(_sphere);
 
 		map->Move(vec3::back(0.5f));
 	}

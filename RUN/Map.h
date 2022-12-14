@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class Shader;
+class Object;
 class Rect;
 
 class Map
@@ -20,17 +21,19 @@ public:
 
 	void RemoveTile(int32_t index);
 	void ChangeTileColor(int32_t index, float r, float g, float b, std::shared_ptr<Shader>& shader);
+	void Reuse(float delta);
 
 	void Render(std::shared_ptr<Shader>& shader);
 
 	const float GetPos() const;
 
-	int32_t CheckCollision(class Object* other);
+	int32_t CheckCollision(Object* other);
+	void CheckItemCollision(Object* player);
 
 private:
 	std::vector<Rect*> _tiles;
 	std::vector<Rect*> _lines;
 	std::vector<class Cube*> _blocks;
-	std::vector<class Teapot*> _items;
+	std::vector<std::pair<class Teapot*, bool>> _items;
 };
 
