@@ -28,7 +28,7 @@ public:
 	virtual void Scale(float x, float y, float z);
 	virtual void Scale(glm::vec3 delta);
 
-	bool CheckCollision(Object* other);
+	virtual int32_t CheckCollision(Object* other);
 
 	void BindVAO() { _mesh->BindVAO(); }
 	void BindIndex() { _mesh->BindIndex(); }
@@ -40,7 +40,7 @@ public:
 	void TurnOffLight() { _material->TurnOffLight(); }
 
 	const size_t GetIndexNum() const { return _mesh->GetIndexNum(); }
-	const glm::vec3 GetPos() { return _pos = _model[3]; }
+	const glm::vec3 GetPos() { return _pos; }
 	const glm::vec3 GetAngle() const { return _angle; }
 	const glm::vec3 GetColor() const { return _material->GetColor(); }
 	constexpr uint32_t GetDrawType() const { return _draw_type; }

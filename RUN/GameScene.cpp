@@ -13,12 +13,12 @@ GameScene::GameScene() :
 	_camera{ std::make_shared<Camera>(glm::vec3{ 0.f, 1.f, 2.f }) },
 	_shader{ std::make_shared<Shader>() },
 	_stop_animation{ true },
-	_animation_speed{ 10 },
+	_animation_speed{ 20 },
 	_click{ false },
 	_old_x{ 0 },
 	_old_y{ 0 },
 	_time{ glutGet(GLUT_ELAPSED_TIME) },
-	_old_time{ _time },
+	_old_time{ 0 },
 	_delta_time{ 0.f },
 	_frame{ 0 },
 	_frame_time{ _time },
@@ -55,14 +55,14 @@ GameScene::~GameScene()
 void GameScene::OnLoad()
 {
 	LoadSingleObject(_sphere, _shader);
-	LoadMultipleObject(&_map, _shader);
+	LoadMap(&_map, _shader);
 }
 
 // 동적할당한 모든 객체 할당 해제
 void GameScene::OnRelease()
 {
 	ReleaseSingleObject(_sphere);
-	ReleaseMultipleObject(&_map);
+	ReleaseMap(&_map);
 }
 
 void GameScene::OnIdleMessage()
@@ -71,7 +71,7 @@ void GameScene::OnIdleMessage()
 
 	OnKeyboardPressedMessage();
 	OnSpecialKeyPressedMessage();
-
+	//_sphere->Move(vec3::down(_gravity * _delta_time));
 	if (_jumping == true)
 		Jump();
 }
@@ -85,7 +85,7 @@ void GameScene::OnSpecialKeyMessage(int32_t key, int32_t x, int32_t y)
 {
 	_special.insert(key);
 
-	_camera->OnSpecialKeyMessage(key, x, y, _delta_time * 100.f);
+	//_camera->OnSpecialKeyMessage(key, x, y, _delta_time * 10.f);
 }
 
 void GameScene::OnKeyboardPressedMessage()
@@ -174,8 +174,11 @@ void GameScene::OnRender()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// TODO : Object render
+	//_sphere->Move(vec3::down(_gravity * _delta_time));
+	//CheckWorldCollision(_map[0], _sphere);
 	RenderSingleObject(_sphere, _shader);
-	RenderMultipleObject(&_map, _shader);
+	//RenderMultipleObject(&_map, _shader);
+	RenderMap(&_map, _shader);
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
@@ -187,6 +190,9 @@ void GameScene::CalculateDeltaTimeNFPS()
 {
 	++_frame;
 	_time = glutGet(GLUT_ELAPSED_TIME);
+
+	if (_old_time == 0)
+		_old_time = _time;
 
 	_delta_time = Convert::ToFloat((_time - _old_time)) / 1000.f;
 
@@ -284,24 +290,114 @@ void GameScene::RenderMultipleObject(std::vector<Object*>* object, std::shared_p
 
 void GameScene::CreateMap()
 {
-	_map.reserve(29 * 2);
+	glm::vec4 color{ 0.663865268f, 0.736751020f, 0.674442828f, 1.f };
 
-	for (int32_t i = 0; i < 29; ++i)
+	for (int32_t i = 0; i < 30; ++i)
 	{
-		std::string path{ "../Dependencies/model/map/" + std::to_string(i + 1) + ".obj" };
-
-		_map.push_back(new Map{ path });
-		_map.back()->SetShader(_shader);
-		_map.back()->SetObjectColor(RAND_COLOR, 1.f);
-		_map.back()->Move(vec3::front(50.f * (2 * i + 1)));
-
-		_map.push_back(new Map{ path });
-		_map.back()->SetShader(_shader);
-		_map.back()->SetObjectColor(BLACK, 1.f);
-		_map.back()->SetDrawType(GL_LINES);
-		_map.back()->Scale(glm::vec3{ 0.999 });
-		_map.back()->Move(vec3::front(50.f * (2 * i + 1)));
+		_map.push_back(new Map{ _shader, color, vec3::front(5.f * i) });
 	}
+
+	_map[1]->ChangeTileColor(10, BLUE, _shader);
+
+	_map[2]->RemoveTile(1);
+	_map[2]->RemoveTile(7);
+	_map[2]->RemoveTile(13);
+	_map[2]->ChangeTileColor(5, RED, _shader);
+	_map[2]->ChangeTileColor(17, GREEN, _shader);
+
+	_map[3]->RemoveTile(4);
+	_map[3]->RemoveTile(10);
+	_map[3]->RemoveTile(16);
+
+	_map[4]->ChangeTileColor(2, BLUE, _shader);
+	_map[4]->ChangeTileColor(6, GREEN, _shader);
+	_map[4]->ChangeTileColor(14, RED, _shader);
+
+	for (int32_t i = 0; i < 18; ++i)
+	{
+		if (i == 1 or i == 4 or i == 7 or i == 10 or i == 13 or i == 16)
+			continue;
+
+		_map[5]->RemoveTile(i);
+	}
+
+	_map[6]->ChangeTileColor(2, GREEN, _shader);
+	_map[6]->ChangeTileColor(14, GREEN, _shader);
+
+	_map[8]->ChangeTileColor(2, RED, _shader);
+	_map[8]->ChangeTileColor(6, BLUE, _shader);
+	_map[8]->ChangeTileColor(15, BLUE, _shader);
+
+	_map[10]->ChangeTileColor(9, GREEN, _shader);
+
+	_map[11]->ChangeTileColor(6, RED, _shader);
+	
+	_map[12]->ChangeTileColor(4, BLUE, _shader);
+	_map[12]->ChangeTileColor(16, RED, _shader);
+
+	for (int32_t i = 0; i < 18; ++i)
+	{
+		if (i == 1 or i == 10)
+			continue;
+
+		_map[14]->RemoveTile(i);
+	}
+
+	_map[18]->ChangeTileColor(3, RED, _shader);
+
+	_map[20]->RemoveTile(3);
+	_map[20]->RemoveTile(4);
+	_map[20]->RemoveTile(5);
+	_map[20]->RemoveTile(9);
+	_map[20]->RemoveTile(10);
+	_map[20]->RemoveTile(11);
+	_map[20]->RemoveTile(15);
+	_map[20]->RemoveTile(16);
+	_map[20]->RemoveTile(17);
+	_map[20]->ChangeTileColor(7, BLUE, _shader);
+	_map[20]->ChangeTileColor(13, RED, _shader);
+
+	_map[21]->ChangeTileColor(3, GREEN, _shader);
+
+	for (int32_t i = 0; i < 15; ++i)
+	{
+		if (i == 1 or i == 4 or i == 7 or i == 10 or i == 13)
+			continue;
+
+		_map[22]->RemoveTile(i);
+	}
+	_map[22]->RemoveTile(16);
+
+	_map[23]->RemoveTile(0);
+	_map[23]->RemoveTile(2);
+	_map[23]->RemoveTile(6);
+	_map[23]->RemoveTile(8);
+	_map[23]->RemoveTile(12);
+	_map[23]->RemoveTile(14);
+	_map[23]->ChangeTileColor(11, GREEN, _shader);
+
+	_map[24]->RemoveTile(4);
+	_map[24]->RemoveTile(10);
+	_map[24]->RemoveTile(16);
+	_map[24]->ChangeTileColor(15, BLUE, _shader);
+
+	_map[26]->RemoveTile(0);
+	_map[26]->RemoveTile(1);
+	_map[26]->RemoveTile(5);
+	_map[26]->RemoveTile(10);
+	_map[26]->RemoveTile(12);
+	_map[26]->ChangeTileColor(2, RED, _shader);
+
+	_map[27]->RemoveTile(1);
+	_map[27]->RemoveTile(5);
+	_map[27]->RemoveTile(8);
+	_map[27]->RemoveTile(11);
+	_map[27]->RemoveTile(12);
+	_map[27]->RemoveTile(13);
+	_map[27]->ChangeTileColor(3, BLUE, _shader);
+
+	_map[29]->RemoveTile(3);
+	_map[29]->ChangeTileColor(12, GREEN, _shader);
 }
 
 void GameScene::CreateObjects()
@@ -309,6 +405,36 @@ void GameScene::CreateObjects()
 	_sphere = new Sphere{};
 	_sphere->SetShader(_shader);
 	_sphere->SetObjectColor(RAND_COLOR, 1.f);
+	_sphere->Scale(glm::vec3{ 0.7f });
+}
+
+void GameScene::LoadMap(std::vector<Map*>* map, std::shared_ptr<Shader>& shader)
+{
+	for (auto& obj : *map)
+	{
+		obj->OnLoad(shader);
+	}
+}
+
+void GameScene::ReleaseMap(std::vector<Map*>* map)
+{
+	for (auto& obj : *map)
+	{
+		obj->OnRelease();
+	}
+}
+
+void GameScene::RenderMap(std::vector<Map*>* map, std::shared_ptr<Shader>& shader)
+{
+	// shader program 사용
+	shader->OnUse();
+	// 뷰 변환 및 투영 변환 적용
+	ViewProjection(shader);
+
+	for (auto& obj : *map)
+	{
+		obj->Render(shader);
+	}
 }
 
 void GameScene::Move(define::DIRECTION direction)
@@ -327,13 +453,13 @@ void GameScene::Move(define::DIRECTION direction)
 		break;
 		case define::DIRECTION::UP:
 		{
-			/*if (_jumping == false)
+			if (_jumping == false)
 			{
 				_jump_speed = 4.f;
 				_jump_pos = _sphere->GetPos().y;
 				_jumping = true;
-			}*/
-			_sphere->Move(vec3::up(0.1f));
+			}
+			//_sphere->Move(vec3::up(0.1f));
 		}
 		break;
 		case define::DIRECTION::DOWN:
@@ -376,9 +502,49 @@ void GameScene::MoveWorld()
 {
 	for (auto& map : _map)
 	{
-		if (map->GetPos().z > 50.f)
-			map->Move(vec3::front(50.f * _map.size()));
+		if (map->GetPos() > 1.f)
+			map->Move(vec3::front(5.f * _map.size()));
 
-		map->Move(vec3::back(5.f));
+		//CheckWorldCollision(map, _sphere);
+
+		map->Move(vec3::back(0.5f));
 	}
+}
+
+void GameScene::CheckWorldCollision(Object* map, Object* player)
+{
+	/*int32_t collision_type{ map->CheckCollision(_sphere) };
+
+	if (collision_type == 1)
+	{
+		for (auto& tube : _map)
+		{
+			auto pos{ tube->GetPos() };
+
+			tube->Move(-pos);
+			tube->RotateZ(-60.f);
+			tube->Move(pos);
+		}
+
+		_sphere->Move(vec3::left(6.f));
+		_sphere->Transform(_shader);
+	}
+	else if (collision_type == 2)
+	{
+		for (auto& tube : _map)
+		{
+			auto pos{ tube->GetPos() };
+
+			tube->Move(-pos);
+			tube->RotateZ(60.f);
+			tube->Move(pos);
+		}
+
+		_sphere->Move(vec3::right(6.f));
+		_sphere->Transform(_shader);
+	}
+	else if (collision_type == 3)
+	{
+		_sphere->Move(vec3::up(_delta_time * _gravity));
+	}*/
 }

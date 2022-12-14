@@ -5,6 +5,7 @@
 class Shader;
 class Camera;
 class Object;
+class Map;
 
 class GameScene : public Scene
 {
@@ -51,10 +52,16 @@ private:
 private:
 	void CreateMap();
 	void CreateObjects();
+
+	void LoadMap(std::vector<Map*>* map, std::shared_ptr<Shader>& shader);
+	void ReleaseMap(std::vector<Map*>* map);
+	void RenderMap(std::vector<Map*>* map, std::shared_ptr<Shader>& shader);
+
 	void Move(define::DIRECTION direction);
 	void Jump();
 
 	void MoveWorld();
+	void CheckWorldCollision(Object* map, Object* player);
 #pragma endregion
 
 	// 기본 정의된 클래스 멤버 변수(변경 X)
@@ -83,10 +90,11 @@ private:
 	// 유저가 정의한 클래스 멤버 변수
 #pragma region [USER-DEFINED VARIABLE]
 private:
-	std::vector<Object*> _map;
+	std::vector<Map*> _map;
 	std::vector<Object*> _map_line;
 	Object* _sphere;		// == Object* _object[2](이 변수는 단일 객체가 아닌 배열로서 사용)
 	std::vector<Object*> _grid;
+	Object* _object;
 
 	bool _jumping;
 	float _jump_speed;

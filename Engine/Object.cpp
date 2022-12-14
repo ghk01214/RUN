@@ -58,6 +58,7 @@ void Object::Transform(std::shared_ptr<Shader>& shader)
 
 	// 변환 값들을 다 곱하면 마지막에 기존의 변환 행렬을 곱한다
 	_model = model * _model;
+	_pos = _model[3];
 
 	// 연결 리스트 초기화
 	_transform.clear();
@@ -117,21 +118,20 @@ void Object::Scale(glm::vec3 delta)
 	_transform.push_back(glm::scale(mat4::unit(), delta));
 }
 
-bool Object::CheckCollision(Object* other)
+int32_t Object::CheckCollision(Object* other)
 {
 	// TODO : 충돌처리 함수 작성
-	if (other->GetPos().x + other->GetRadius().x < (GetPos().x - _radius.x)
-		or other->GetPos().x - other->GetRadius().x > (GetPos().x + _radius.x))
-		return false;
+	if ((other->GetPos().x + other->GetRadius().x < GetPos().x - _radius.x)
+		or (other->GetPos().x - other->GetRadius().x > GetPos().x + _radius.x))
+		return 1;
 
-	if (other->GetPos().y + other->GetRadius().y < (GetPos().y - _radius.y)
-		or other->GetPos().y - other->GetRadius().y >(GetPos().y + _radius.y))
-		return false;
+	if ((other->GetPos().y + other->GetRadius().y < GetPos().y - _radius.y)
+		or (other->GetPos().y - other->GetRadius().y > GetPos().y + _radius.y))
+		return 2;
 
-	if (other->GetPos().z + other->GetRadius().z < (GetPos().z - _radius.z)
-		or other->GetPos().z - other->GetRadius().z > (GetPos().z + _radius.z))
-		return false;
+	if ((other->GetPos().z + other->GetRadius().z < GetPos().z - _radius.z)
+		or (other->GetPos().z - other->GetRadius().z > GetPos().z + _radius.z))
+		return 3;
 
-	return true;	// 위에서 검사 한것이 모두 아니면 충돌!
-	
+	return 0;	// 위에서 검사 한것이 모두 아니면 충돌!
 }
